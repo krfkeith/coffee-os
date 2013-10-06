@@ -1,0 +1,43 @@
+in case you have issue remembering like me:
+
+
+    * Also, before the else keyword, no semicolon (;) is allowed, but all statements can be compound statements.
+    * In nested If.. then .. else constructs, some ambiguity may araise as to which else statement pairs with which if statement. The rule is that the else keyword matches the first if keyword (searching backwards) not already matched by an else keyword.
+
+For example:
+If exp1 Then  
+  If exp2 then  
+    Stat1  
+else  
+  stat2;
+
+Despite its appearance, the statement is syntactically equivalent to
+If exp1 Then  
+   begin  
+   If exp2 then  
+      Stat1  
+   else  
+      stat2  
+   end;
+
+and not to
+{ NOT EQUIVALENT }  
+If exp1 Then  
+   begin  
+   If exp2 then  
+      Stat1  
+   end  
+else  
+   stat2;
+
+If it is this latter construct which is needed, the begin and end keywords must be present. When in doubt, it is better to add them. BUT KEEP THE SEMICOLON OFF before the else
+
+
+otherwise you get '; expected but else found' from FPC compiler.
+
+yes, you can use the keyword 'otherwise' if 'else' is ambiguous.
+
+
+There is a video on Youtube that helps explain this also.
+
+-Jazz

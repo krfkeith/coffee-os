@@ -1,0 +1,563 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+   <meta name="description" content="Describes interfacing the ECP (Extended Capabilities Port), complete with register details and waveforms.">
+   <meta name="keywords" content="Parallel Port, Printer Port, IEEE 1284, ECP, Extended Capabilities Port">
+   <title>Interfacing the Extended Capabilities Parallel Port</title>
+</head><body leftmargin="0" topmargin="0" basefont="" face="ARIAL" marginheight="0" marginwidth="0" background="ecp_files/bgyellow.gif">
+
+<style type="text/css">
+#TITLEBLOCK { text-decoration: none; color:#FFFFFF }
+TD,P,FONT {font-family : Arial}
+</style>
+
+<br><center>
+<table boarder="0" width="95%"><tbody><tr>
+  <td width="25%"><center><a href="http://www.beyondlogic.org/"><img src="ecp_files/beyondsmall.gif" alt="Beyond Logic" border="0"></a></center></td>
+  <td width="50%"><center>
+
+<script type="text/javascript"><!--
+google_ad_client = "pub-7725444460812017";
+google_ad_width = 468;
+google_ad_height = 60;
+google_ad_format = "468x60_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "0033FF";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript" src="ecp_files/show_ads.js">
+</script>
+  <noscript><FONT COLOR=RED>This page is optimised with JavaScript 1.2. Currently your browser has JavaScript switched off.</noscript>
+  </center></td>
+  <td valign="CENTER" align="RIGHT"><br><font face="ARIAL">
+  <script language="javascript" src="ecp_files/beyondmenu_plain.js"></script><script language="JavaScript1.2" src="ecp_files/HM_ScriptDOM.js" type="text/javascript"></script><font size="-1">Friday, October 8th, 2010</font><br></font></td></tr></tbody></table></center><table frame="Below" width="100%" border="0" cellpadding="1" cellspacing="0"><tbody><tr><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#USB" onmouseover="HM_f_PopUp('elMenu1',event)" onmouseout="HM_f_PopDown('elMenu1')">Universal Serial Bus</a>&nbsp;<img src="ecp_files/HM_More_white_down.gif"></b></font></center></td><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#uClinux" onmouseover="HM_f_PopUp('elMenu2',event)" onmouseout="HM_f_PopDown('elMenu2')">Embedded Internet</a>&nbsp;<img src="ecp_files/HM_More_white_down.gif"></b></font></center></td><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#Legacy" onmouseover="HM_f_PopUp('elMenu3',event)" onmouseout="HM_f_PopDown('elMenu3')">Legacy Ports</a>&nbsp;<img src="ecp_files/HM_More_white_down.gif"></b></font></center></td><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#DeviceDrivers" onmouseover="HM_f_PopUp('elMenu4',event)" onmouseout="HM_f_PopDown('elMenu4')">Device Drivers</a>&nbsp;<img src="ecp_files/HM_More_white_down.gif"></b></font></center></td><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#Misc" onmouseover="HM_f_PopUp('elMenu5',event)" onmouseout="HM_f_PopDown('elMenu5')">Miscellaneous</a>&nbsp;<img src="ecp_files/HM_More_white_down.gif"></b></font></center></td></tr></tbody></table><br>
+<noscript></TD></TR></TABLE></CENTER></noscript>
+
+<center>
+<table width="95%"><tbody><tr><td>
+<br>
+<center><font size="5" color="GREEN">Interfacing the Extended Capabilities Port</font></center>
+
+<center><br><b><font size="+2">Table of Contents</font></b></center>
+<br>
+
+<center><a href="#1">Introduction to the Extended Capabilities Port</a></center>
+<center><a href="#2">ECP Hardware Properties</a></center>
+<center><a href="#3">The ECP Handshake</a></center>
+
+<center><a href="#4">ECP Forward Data Cycle</a></center>
+<center><a href="#5">ECP Forward Command Cycle</a></center>
+<center><a href="#6">ECP Reverse Data Cycle</a></center>
+<center><a href="#7">ECP Reverse Command Cycle</a></center>
+<center><a href="#13">ECP Handshake vs SPP Handshake</a></center>
+
+<center><a href="#8">RLE - Run Length Encoding</a></center>
+<center><a href="#9">ECP Software Registers</a></center>
+<center><a href="#10">ECP's Extended Control Register (ECR)</a></center>
+<center><a href="#11">ECP's Configuration Register A (cnfgA)</a></center>
+<center><a href="#12">ECP's Configuration Register B (cnfgB)</a></center>
+
+<br>
+<br>
+
+<a name="1"><i><font size="+2">Introduction to the Extended Capabilities Port</font></i></a>
+<hr>
+<ul>
+<p>
+The Extended Capabilities Mode was designed by Hewlett Packard and Microsoft
+to be implemented as the <i>Extended Capabilities Port Protocol and ISA
+Interface Standard</i>. This protocol uses additional hardware to generate
+handshaking signals etc just like the EPP mode, thus runs at very much
+the same speed than the EPP mode. This mode, however may work better under
+Windows as it can use DMA channels to move it's data about. It also uses
+a FIFO buffer for the sending and/or receiving of data.
+</p>
+<p>
+Another feature of ECP is a real time data compression. It uses Run Length
+Encoding (RLE) to achieve data compression ratio's up to 64:1. This comes
+is useful with devices such as Scanners and Printers where a good part
+of the data is long strings which are repetitive.
+</p>
+<p>
+The Extended Capabilities Port supports a method of channel addressing.
+This is not intended to be used to daisy chain devices up but rather to
+address multiple devices within one device. Such an example is many fax
+machines on the market today which may contain a Parallel Port to interface
+it to your computer. The fax machine can be split up into separate devices
+such as the scanner, modem/Fax and printer, where each part can be addresses
+separately, even if the other devices cannot accept data due to full buffers.
+</p>
+</ul>
+<a name="2"><i><font size="+2">ECP Hardware Properties</font></i></a>
+<hr>
+<ul>
+<p>
+While Extended Capabilities Printer Ports use exactly the same D25 connector
+as your SPP, ECP assigns different tasks to each of the pins, just like
+EPP. This means that there is also a different handshake method when using
+a ECP interface.
+</p>
+<p>
+The ECP is backwards compatible to the SPP and EPP. When operating in SPP
+mode, the individual lines operate in exactly the same fashion than the
+SPP and thus are labeled Strobe, Auto Linefeed, Init, Busy etc. When operating
+in EPP mode, the pins function according to the method described in the
+EPP protocol and have a different method of Handshaking. When the port
+is operating in ECP mode, then the following labels are assigned to each
+pin.
+</p>
+<p>
+</p><center><table width="90%" border="1">
+<tbody><tr><td><center><b>Pin</b></center></td><td><center><b>SPP Signal</b></center></td><td><center><b>ECP Signal</b></center></td><td><center><b>IN/OUT</b></center></td><td><center><b>Function</b></center></td></tr>
+<tr><td><center>1</center></td><td><center>Strobe</center></td><td><center>HostCLK</center></td><td><center>Out</center></td><td>A
+ low on this line indicates, that there is valid data at the host. When 
+this pin is de-asserted, the +ve clock edge should be used to shift the 
+data into the device.</td></tr>
+<tr><td><center>2-9</center></td><td><center>Data 0-7</center></td><td><center>Data 0-7</center></td><td><center>In/Out</center></td><td>Data Bus. Bi-directional</td></tr>
+<tr><td><center>10</center></td><td><center>Ack</center></td><td><center>PeriphCLK</center></td><td><center>In</center></td><td>A
+ low on this line indicates, that there is valid data at the Device. 
+When this pin is de-asserted, the +ve clock edge should be used to shift
+ the data into the Host.</td></tr>
+<tr><td><center>11</center></td><td><center>Busy</center></td><td><center>PeriphAck</center></td><td><center>In</center></td><td>When in reverse direction a HIGH indicates Data, while a LOW indicates a Command Cycle.<br>In forward direction, functions as PeriphAck.</td></tr>
+<tr><td><center>12</center></td><td><center>Paper Out / End</center></td><td><center>nAckReverse</center></td><td><center>In</center></td><td>When Low, Device acknowledges Reverse Request.</td></tr>
+<tr><td><center>13</center></td><td><center>Select</center></td><td><center>X-Flag</center></td><td><center>In</center></td><td>Extensibility Flag</td></tr>
+<tr><td><center>14</center></td><td><center>Auto Linefeed</center></td><td><center>Host Ack</center></td><td><center>Out</center></td><td>When in forward direction a HIGH indicates Data, while a LOW indicates a Command Cycle.<br>In reverse direction, functions as HostAck.</td></tr>
+<tr><td><center>15</center></td><td><center>Error / Fault</center></td><td><center>PeriphRequest</center></td><td><center>In</center></td><td>A LOW set by the device indicates reverse data is available</td></tr>
+<tr><td><center>16</center></td><td><center>Initialize</center></td><td><center>nReverseRequest</center></td><td><center>Out</center></td><td>A LOW indicates data is in reverse direction</td></tr>
+<tr><td><center>17</center></td><td><center>Select Printer</center></td><td><center>1284 Active</center></td><td><center>Out</center></td><td>A HIGH indicates Host is in 1284 Transfer Mode. Taken low to terminate.</td></tr>
+<tr><td><center>18-25</center></td><td><center>Ground</center></td><td><center>Ground</center></td><td><center>GND</center></td><td>Ground</td></tr>
+</tbody></table>
+<font size="-1">Table 1. Pin Assignments For Extended Capabilities Parallel Port Connector.</font></center>
+<p></p>
+<p>
+The HostAck and PeriphAck lines indicate whether the signals on the data
+line are data or a command. If these lines are high then data is placed
+on the data lines (Pins 2-7). If a command cycle is taking place then the
+appropriate line will be low, ie if the host is sending a command, then
+HostAck will be low or if the device/peripheral is sending a command the
+PeriphAck line will be low.
+</p>
+<p>
+A command cycle can be one of two things, either a RLE count or an address.
+This is determined by the bit 7 (MSB) of the data lines, ie Pin 9. If bit
+7 is a 0, then the rest of the data (bits 0-6) is a run length count which
+is used with the data compression scheme. However if bit 7 is a 1, then
+the data present on bits 0 to 6 is a channel address. With one bit missing
+this can only be a value from 0 to 127(DEC).
+</p>
+</ul>
+<a name="3"><i><font size="+2">The ECP Handshake</font></i></a>
+<hr>
+<ul>
+<p>
+The ECP handshake is different to the SPP handshake. The most obvious difference
+is that ECP has the ability at anytime to transmit data in any direction,
+thus additional signaling is required. Below is the ECP handshake for both
+the Forward and Reverse Directions.
+</p>
+
+<a name="4"><i><font size="+2">ECP Forward Data Cycle</font></i></a>
+<hr>
+<br>
+<center>
+<table border="0">
+<tbody><tr><td>
+<img src="ecp_files/ecpfdata.gif" alt="Enhanced Capabilities Port Forward Data Cycle" border="0">
+<br><center><font size="-1">Figure 1. Enhanced Capabilities Port Forward Data Cycle.</font></center>
+</td><td>
+<b>1. Data is placed on Data lines by Host.</b><br>
+2. Host then indicates a Data Cycle will proceed by asserting HostAck.<br>
+<b>3. Host indicates valid data by asserting HostClk low.</b><br>
+4. Peripheral sends its acknowledgment of valid data by asserting PeriphAck.<br>
+<b>5. Host de-asserts HostClk high. +ve edge used to shift data into the Peripheral.</b><br>
+6. Peripheral sends it's acknowledgment of the byte via de-asserting PeriphAck.
+</td></tr>
+</tbody></table>
+</center>
+<br>
+
+<a name="5"><i><font size="+2">ECP Forward Command Cycle</font></i></a>
+<hr>
+<br>
+<center>
+<table border="0">
+<tbody><tr><td>
+<img src="ecp_files/ecpfcomm.gif" alt="Enhanced Capabilities Port Forward Command Cycle" border="0">
+<br><center><font size="-1">Figure 2. Enhanced Capabilities Port Forward Command Cycle.</font></center>
+</td><td>
+<b>1. Data is placed on Data lines by Host.</b><br>
+2. Host then indicates a Command cycle will proceed by de-asserting HostAck.<br>
+<b>3. Host indicates valid data by asserting HostClk low.</b><br>
+4. Peripheral sends its acknowledgment of valid data by asserting PeriphAck.<br>
+<b>5. Host de-asserts HostClk high. +ve edge used to shift data into the Peripheral.</b><br>
+6. Peripheral sends it's acknowledgment of the byte via de-asserting PeriphAck.
+</td></tr>
+</tbody></table>
+</center>
+<br>
+
+<a name="6"><i><font size="+2">ECP Reverse Data Cycle</font></i></a>
+<hr>
+<br>
+<center>
+<table border="0">
+<tbody><tr><td>
+<img src="ecp_files/ecprdata.gif" alt="Enhanced Capabilities Port Reverse Data Cycle" border="0">
+<br><center><font size="-1">Figure 3. Enhanced Capabilities Port Reverse Data Cycle.</font></center>
+</td><td>
+<ul>
+<b>1. Host sets nReverseRequest Low to request a reverse channel.</b><br>
+2. Peripheral acknowledges reverse channel request via asserting nAckReverse low.<br>
+<b>3. Data is placed on data lines by Peripheral.</b><br>
+4. Data cycle is then selected by Peripheral via PeriphAck going high.<br>
+<b>5. Valid data is indicated by the Peripheral setting PeriphClk low.</b><br>
+6. Host sends its acknowledgment of valid data via HostAck going high.<br>
+<b>7. Device/Peripheral sets PeriphClk high. +ve edge used to shift data into the Host.</b><br>
+8. Host sends it's acknowledgment of the byte by de-asserting HostAck low.
+</ul></td></tr>
+</tbody></table>
+</center>
+<br>
+
+<a name="7"><i><font size="+2">ECP Reverse Command Cycle</font></i></a>
+<hr>
+<br>
+<center>
+<table border="0">
+<tbody><tr><td>
+<img src="ecp_files/ecprcomm.gif" alt="Enhanced Capabilities Port Reverse Command Cycle" border="0">
+<br><center><font size="-1">Figure 4. Enhanced Capabilities Port Reverse Command Cycle.</font></center>
+</td><td>
+<b>1. Host sets nReverseRequest Low to request a reverse channel.</b><br>
+2. Peripheral acknowledges reverse channel request via asserting nAckReverse low.<br>
+<b>3. Data is placed on data lines by Peripheral.</b><br>
+4. Command cycle is then selected by Peripheral via PeriphAck going low.<br>
+<b>5. Valid data is indicated by the Peripheral setting PeriphClk low.</b><br>
+6. Host sends its acknowledgment of valid data via HostAck going high.<br>
+<b>7. Device/Peripheral sets PeriphClk high. +ve edge used to shift data into the Host.</b><br>
+8. Host sends it's acknowledgment of the byte by de-asserting HostAck low.
+</td></tr>
+</tbody></table>
+</center>
+<br>
+
+<a name="13"><i><font size="+2">ECP Handshake vs SPP Handshake</font></i></a>
+<hr>
+<p>
+If we look back at the SPP Handshake you will realize it only has 5 steps,
+<br><br>
+</p><ul><i>1. Write the byte to the Data Port.</i>
+<br><i>2. Check to see is the printer is busy. If the printer is busy, it will
+not accept any data, thus any data which is written will be lost.</i>
+<br><i>3. Take the Strobe (Pin 1) low. This tells the printer that there is
+the correct data on the data lines. (Pins 2-9)</i>
+<br><i>4. Put the strobe high again after waiting approximately 5 microseconds
+after putting the strobe low. (Step 3)</i>
+<br><i>5. Check for Ack from Peripheral.</i>
+</ul>
+<p></p>
+
+<p>
+and that the ECP handshake has many more steps. This would suggest that
+ECP would be slower that SPP. However this is not the case as all of these
+steps above are controlled by the hardware on your I/O control. If this
+handshake was implemented via software control then it would be a lot slower
+that it's SPP counterpart.
+</p>
+</ul>
+
+<a name="8"><i><font size="+2">RLE - Run Length Encoding</font></i></a>
+<hr>
+
+<ul>
+<p>
+As briefly discussed earlier, the ECP Protocol includes a Simple Compression
+Scheme called Run Length Encoding. It can support a maximum compression
+ratio of 64:1 and works by sending repetitive single bytes as a run count
+and one copy of the byte. The run count determines how many times the following
+byte is to be repeated.
+</p>
+<p>
+For example, if a string of 25 'A's were to be sent, then a run count byte
+equal to 24 would be sent first, followed by the byte 'A'. The receiving
+peripheral on receipt of the Run Length Count, would expand (Repeat) the
+next byte a number of times determined via the run count.
+</p>
+<p>
+The Run Length Byte has to be distinguished from other bytes in the Data
+Path. It is sent as a Command to the ECP's Address FIFO Port. Bytes sent
+to this register can be of two things, a Run Length Count or an Address.
+These are distinguished by the MSB, Bit 7. If Bit 7 is Set (1), then the
+other 7 bits, bits 0 to 6 is a channel address. If Bit 7 is Reset (0),
+then the lower 7 bits is a run length count. By using the MSB, this limits
+channel Addresses and Run Length Counts to 7 Bits (0 - 127).
+</p>
+</ul>
+
+<a name="9"><i><font size="+2">ECP Software Registers</font></i></a>
+<hr>
+
+<ul>
+<p>
+The table below shows the registers of the Extended Capabilities Port.
+The first 3 registers are exactly the same than with the Standard Parallel
+Port registers. Note should be taken, however, of the Enable Bi-Directional
+Port bit (bit 5 of the Control Port.) This bit reflects the direction that
+the ECP port is currently in, and will effect the FIFO&nbsp;Full and FIFO&nbsp;Empty
+bits of the ECR Register, which will be explained later.
+</p>
+<p>
+</p><center><table width="70%" border="1">
+<tbody><tr><td><center><b>Address</b></center></td><td><center><b>Port Name</b></center></td><td><center><b>Read/Write</b></center></td></tr>
+<tr><td rowspan="2" valign="top"><center>Base + 0</center></td><td><center>Data Port (SPP)</center></td><td><center>Write</center></td></tr>
+<tr><td><center>ECP Address FIFO (ECP MODE)</center></td><td><center>Read/Write</center></td></tr>
+<tr><td><center>Base + 1</center></td><td><center>Status Port (All Modes)</center></td><td><center>Read/Write</center></td></tr>
+<tr><td><center>Base + 2</center></td><td><center>Control Port (All Modes)</center></td><td><center>Read/Write</center></td></tr>
+<tr><td rowspan="4" valign="top"><center>Base + 400h</center></td><td><center>Data FIFO (Parallel Port FIFO Mode)</center></td><td><center>Read/Write</center></td></tr>
+<tr><td><center>Data FIFO (ECP Mode)</center></td> <td><center>Read/Write</center></td></tr>
+<tr><td><center>Test FIFO (Test Mode)</center></td><td><center>Read/Write</center></td></tr>
+<tr><td><center>Configuration Register A (Configuration Mode)</center></td><td><center>Read/Write</center></td></tr>
+<tr><td><center>Base + 401h</center></td><td><center>Configuration Register B (Configuration Mode)</center></td><td><center>Read/Write</center></td></tr>
+<tr><td><center>Base + 402h</center></td><td><center>Extended Control Register (Used by all modes)</center></td><td><center>Read/Write</center></td></tr>
+</tbody></table>
+<font size="-1">Table 2 : ECP Registers</font></center>
+<p></p>
+
+<a name="10"><i><font size="+2">ECP's Extended Control Register (ECR)</font></i></a>
+<hr>
+<ul>
+
+<p>
+The most important register with a Extended Capabilities Parallel Port
+is the Extended Control Register (ECR) thus we will target it's operation
+first. This register sets up the mode in which the ECP will run, plus gives
+status of the ECP's FIFO among other things. You will find the contents
+of this register below, in more detail.
+</p>
+
+<p>
+</p><center>
+<table width="65%" border="1">
+<tbody><tr><td width="10%"><center><b>Bit</b></center></td><td colspan="2"><center><b>Function</b></center></td></tr>
+<tr><td rowspan="9" valign="top"><center>7:5</center></td><td colspan="2"><i>Selects Current Mode of Operation</i></td></tr>
+<tr><td width="10%"><center>000</center></td><td>Standard Mode</td></tr>
+<tr><td><center>001</center></td><td>Byte Mode</td></tr>
+<tr><td><center>010</center></td><td>Parallel Port FIFO Mode</td></tr>
+<tr><td><center>011</center></td><td>ECP FIFO Mode</td></tr>
+<tr><td><center>100</center></td><td>EPP Mode</td></tr>
+<tr><td><center>101</center></td><td>Reserved</td></tr>
+<tr><td><center>110</center></td><td>FIFO Test Mode</td></tr>
+<tr><td><center>111</center></td><td>Configuration Mode</td></tr>
+<tr><td><center>4</center></td><td colspan="2">ECP Interrupt Bit</td></tr>
+<tr><td><center>3</center></td><td colspan="2">DMA Enable Bit</td></tr>
+<tr><td><center>2</center></td><td colspan="2">ECP Service Bit</td></tr>
+<tr><td><center>1</center></td><td colspan="2">FIFO Full</td></tr>
+<tr><td><center>0</center></td><td colspan="2">FIFO Empty</td></tr>
+</tbody></table>
+<font size="-1">Table 3 ECR - Extended Control Register</font></center>
+<p></p>
+
+<p>
+The three MSB of the Extended Control Register selects the mode of operation.
+There are 7 possible modes of operation, but not all ports will support
+all modes. The EPP&nbsp;mode is one such example, not being available on some
+ports. Below is a table of Modes of Operation.
+</p>
+
+<p>
+</p><center><table width="90%">
+<tbody><tr><td colspan="2" width="25%"><center><hr><b>Modes of Operation</b><hr></center></td></tr>
+<tr><td valign="top">Standard Mode</td><td>Selecting this mode will cause the ECP port to behave as a Standard Parallel Port, without Bi-directional functionality.</td></tr>
+<tr><td valign="top">Byte Mode / PS/2 Mode</td><td>Behaves as a SPP in Bi-directional (Reverse) mode.</td></tr>
+<tr><td valign="top">Parallel Port FIFO Mode</td><td>In this mode, any 
+data written to the Data FIFO will be sent to the peripheral using the 
+SPP Handshake. The hardware will generate the handshaking required. 
+Useful with non-ECP devices such as Printers. You can have some of the 
+features of ECP like FIFO buffers and hardware generation of handshaking
+ but&nbsp;with the existing SPP&nbsp;handshake instead of the 
+ECP&nbsp;Handshake.</td></tr>
+<tr><td valign="top">ECP FIFO Mode</td><td>Standard Mode for ECP Use. This mode uses the ECP Handshake, already described.</td></tr>
+<tr><td valign="top">EPP Mode<i>/Reserved</i></td><td>On some chipsets, this mode will enable EPP to be used. While on others, this mode is still reserved.</td></tr>
+<tr><td valign="top">Reserved</td><td>Currently Reserved</td></tr>
+<tr><td valign="top">FIFO Test Mode</td>
+<td>While in this mode, any data written to the Test FIFO Register will
+be placed into the FIFO and any data read from the Test FIFO register will
+be read from the FIFO&nbsp;buffer. The FIFO Full/Empty Status Bits will reflect
+their true value, thus FIFO depth, among other things can be determined
+in this mode.
+</td></tr>
+<tr><td valign="top">Configuration Mode</td><td>In this mode, the two configuration registers, cnfgA &amp; cnfgB become available at their designated Register Addresses.</td></tr>
+<tr><td colspan="2"><hr></td></tr>
+</tbody></table>
+</center>
+<p></p>
+
+<p>
+As outlined above, when the port is set to operate in Standard Mode,
+it will behave just like a Standard Parallel Port (SPP) with no bi-directional
+data transfer. If you require bi-directional transfer, then set the mode
+to Byte Mode. The Parallel Port FIFO mode and ECP FIFO mode both use hardware
+to generate the necessary handshaking signals. The only difference between
+each mode is that The Parallel Port FIFO Mode uses SPP handshaking, thus
+can be used with your SPP printer. ECP FIFO mode uses ECP handshaking.
+</p>
+<p>
+The FIFO test mode can be used to test the capacity of the FIFO Buffers
+as well as to make sure they function correctly. When in FIFO test mode,
+any byte which is written to the TEST FIFO (Base + 400h) is placed into
+the FIFO buffer and any byte which is read from this register is taken
+from the FIFO Buffer. You can use this along with the FIFO Full and FIFO
+Empty bits of the Extended Control Register to determine the capacity of
+the FIFO Buffer. This should normally be about 16 Bytes deep.
+</p>
+<p>
+The other Bits of the ECR also play an important role in the operation
+of the ECP&nbsp;Port. The ECP&nbsp;Interrupt Bit, (Bit 4) enables the use of Interrupts,
+while the DMA Enable Bit (Bit 3) enables the use of Direct Memory Access.
+The ECP&nbsp;Service Bit (Bit 2) shows if an interrupt request has been initiated.
+If so, this bit will be set. Resetting this bit is different with different
+chips. Some require you to Reset the Bit, E.g. Write a Zero to it. Others
+will reset once the Register has been read.
+</p>
+<p>
+The FIFO Full (Bit 1) and FIFO Empty (Bit 0) show the status of the FIFO Buffer.
+These bits are direction dependent, thus note should be taken of the Control
+Register's Bit 5. If bit 0 (FIFO Empty) is set, then the FIFO buffer is
+completely empty. If Bit 1 is set then the FIFO buffer is Full. Thus, if
+neither bit 0 or 1 is set, then there is data in FIFO, but is not yet full.
+These bits can be used in FIFO Test Mode, to determine the capacity of
+the FIFO Buffer.
+</p>
+</ul>
+
+<br><a name="11"><i><font size="+2">ECP's Configuration Register A (cnfgA)</font></i></a>
+<hr>
+<ul>
+
+<p>
+Configuration Register A is one of two configuration registers which the
+ECP Port has. These Configuration Registers are only accessible when the
+ECP Port is in Configuration Mode. (See Extended Control Register) CnfgA
+can be accessed at Base + 400h.
+</p>
+<p>
+</p><center><table width="80%" border="1">
+<tbody><tr><td width="10%"><center><b>Bit</b></center></td><td colspan="2"><center><b>Function</b></center></td></tr>
+<tr><td rowspan="2" valign="top"><center>7</center></td><td width="10%"><center>1</center></td><td>Interrupts are level triggered</td></tr>
+<tr><td><center>0</center></td><td>Interrupts are edge triggered (Pulses)</td></tr>
+<tr><td rowspan="4" valign="top"><center>6:4</center></td><td><center>00h</center></td><td>Accepts Max. 16 Bit wide words</td></tr>
+<tr><td><center>01h</center></td><td>Accepts Max. 8 Bit wide words</td></tr>
+<tr><td><center>02h</center></td><td>Accepts Max. 32 Bit wide words</td></tr>
+<tr><td><center>03h:07h</center></td><td>Reserved for future expansion</td></tr>
+<tr><td><center>3</center></td><td colspan="2">Reserved</td></tr>
+<tr><td rowspan="3" valign="top"><center>2</center></td><td colspan="2"><i>Host Recovery : Pipeline/Transmitter Byte included in FIFO?</i></td></tr>
+<tr><td><center>0</center></td><td>In forward direction, the 1 byte in the transmitter pipeline doesn't affect FIFO Full.</td></tr>
+<tr><td><center>1</center></td><td>In forward direction, the 1 byte in the transmitter pipeline is include as part of FIFO Full.</td></tr>
+<tr><td rowspan="5" valign="top"><center>1:0</center></td><td colspan="2"><i>Host Recovery : Unsent byte(s) left in FIFO</i></td></tr>
+<tr><td><center>00</center></td><td>Complete Pword</td></tr>
+<tr><td><center>01</center></td><td>1 Valid Byte</td></tr>
+<tr><td><center>10</center></td><td>2 Valid Bytes</td></tr>
+<tr><td><center>11</center></td><td>3 Valid Bytes</td></tr>
+</tbody></table>
+<font size="-1">Table 4 - Configuration Register A</font></center>
+<p></p>
+<p>
+Configuration Register A can be read to find out a little more about the
+ECP Port. The MSB, shows if the card generates level interrupts or edge triggered interrupts. This will depend upon the
+type of bus your card is using. Bits 4 to 6, show the buses width within
+the card. Some cards only have a 8 bit data path, while others may have
+a 32 or 16 bit width. To get maximum efficiency from your card, the software
+can read the status of these bits to determine the Maximum Word Size to
+output to the port.
+</p>
+<p>
+The 3 LSB's are used for Host Recovery. In order to recover from an error,
+the software must know how many bytes were sent, by determining if there
+are any bytes left in the FIFO. Some implementations may include the byte
+sitting in the transmitter register, waiting to be sent as part of the
+FIFO's Full Status, while others may not. Bit 2 determines weather or not
+this is the case.
+</p>
+<p>
+The other problem is that the Parallel Ports output is only 8 bits wide,
+and that you many be using 16 bit or 32 bit I/O&nbsp;Instructions. If this is
+the case, then part of your Port Word (Word you sent to port) may be sent.
+Therefore Bits 0 and 1 give an indication of the number of valid bytes
+still left in the FIFO, so that you can retransmit these.
+</p>
+</ul>
+
+
+<a name="12"><i><font size="+2">ECP's Configuration Register B (cnfgB)</font></i></a>
+<hr>
+<ul>
+
+<p>
+Configuration Register B, like Configuration Register A is only available
+when the ECP Port is in Configuration Mode. When in this mode, cnfgB resides
+at Base + 401h. Below is the make-up of the cnfgB Register.
+</p>
+<p>
+</p><center><table width="65%" border="1">
+<tbody><tr><td width="10%"><center><b>Bit(s)</b></center></td><td colspan="2"><center><b>Function</b></center></td></tr>
+<tr><td rowspan="2" valign="top"><center>7</center></td><td width="10%"><center>1</center></td><td>Compress outgoing Data Using RLE</td></tr>
+<tr><td><center>0</center></td><td>Do Not compress Data</td></tr>
+<tr><td><center>6</center></td><td colspan="2">Interrupt Status - Shows the Current Status of the IRQ Pin</td></tr>
+<tr><td rowspan="9" valign="top"><center>5:3</center></td><td colspan="2"><i>Selects or Displays Status of Interrupt Request Line.</i></td></tr>
+<tr><td><center>000</center></td><td>Interrupt Selected Via Jumper</td></tr>
+<tr><td><center>001</center></td><td>IRQ 7</td></tr>
+<tr><td><center>010</center></td><td>IRQ 9</td></tr>
+<tr><td><center>011</center></td><td>IRQ 10</td></tr>
+<tr><td><center>100</center></td><td>IRQ 11</td></tr>
+<tr><td><center>101</center></td><td>IRQ 14</td></tr>
+<tr><td><center>110</center></td><td>IRQ 15</td></tr>
+<tr><td><center>111</center></td><td>IRQ 5</td></tr>
+<tr><td rowspan="9" valign="top"><center>2:0</center></td><td colspan="2"><i>Selects or Displays Status of the DMA Channel the Printer Card Uses</i></td></tr>
+<tr><td><center>000</center></td><td>Uses a Jumpered 8 Bit DMA Channel</td></tr>
+<tr><td><center>001</center></td><td>DMA Channel 1</td></tr>
+<tr><td><center>010</center></td><td>DMA Channel 2</td></tr>
+<tr><td><center>011</center></td><td>DMA Channel 3</td></tr>
+<tr><td><center>100</center></td><td>Uses a Jumpered 16 Bit DMA Channel</td></tr>
+<tr><td><center>101</center></td><td>DMA Channel 5</td></tr>
+<tr><td><center>110</center></td><td>DMA Channel 6</td></tr>
+<tr><td><center>111</center></td><td>DMA Channel 7</td></tr>
+</tbody></table>
+<font size="-1">Table 5 - Configuration B Register</font></center>
+<p></p>
+<p>
+The Configuration Register B (cnfgB) can be a combination of read/write
+access. Some ports may be software configurable, where you can set the
+IRQ and DMA resources from the register. Others may be set via BIOS or
+by using jumpers on the Card, thus are read only.
+</p>
+<p>
+Bit 7 of the cnfgB Register selects whether to compress outgoing data using
+RLE (Run Length Encoding.) When Set, the host will compress the data before
+sending. When reset, data will be sent to the peripheral raw (Uncompressed).
+Bit 6 returns the status of the IRQ pin. This can be used to diagnose conflicts
+as it will not only reflect the status of the Parallel Ports IRQ, but and
+other device using this IRQ.
+</p>
+<p>
+Bits 5 to 3 give status of about the Port's IRQ assignment. Likewise for
+bits 2 to 0 which give status of DMA Channel assignment. As mentioned above
+these fields may be read/write. The disappearing species of Parallel Cards
+which have Jumpers may simply show it's resources as "Jumpered"
+or it may show the correct Line Numbers. However these of course will be
+read only.
+</p>
+</ul>
+
+</ul></td></tr>
+</tbody></table>
+
+<font size="2">Copyright 1997-2005 <a href="http://www.beyondlogic.org/about.htm">Craig Peacock</a> - 15th June 2005.</font>
+<br>
+<br>
+</center>
+
+<div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 370px;" id="HM_Menu1"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item1_1">USB in a Nutshell - Introduction</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 17px;" id="HM_Item1_2">USB in a Nutshell - Hardware</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 34px;" id="HM_Item1_3">USB in a Nutshell - USB Protocols</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 51px;" id="HM_Item1_4">USB in a Nutshell - Endpoint Types</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 68px;" id="HM_Item1_5">USB in a Nutshell - USB Descriptors</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 85px;" id="HM_Item1_6">USB in a Nutshell - USB Requests</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 102px;" id="HM_Item1_7">USB in a Nutshell - Enumeration</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 119px;" id="HM_Item1_8">PIC16F87x and PDIUSBD11 USB Example</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 136px;" id="HM_Item1_9">USB 1.1 Integrated Circuits</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 153px;" id="HM_Item1_10">USB 2.0 Integrated Circuits</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 170px;" id="HM_Item1_11">USB Protocol Analysers</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 187px;" id="HM_Item1_12">USB Device Driver Development</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 204px;" id="HM_Item1_13">USB with the simplicity of RS-232</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 221px;" id="HM_Item1_14">On-The-Go Supplement - Point-to-Point Connectivity for USB.</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 254px;" id="HM_Item1_15">ISP1161 Host Controller for Embedded Systems</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 287px;" id="HM_Item1_16">PDIUSBD11 USB Interface</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 304px;" id="HM_Item1_17">Win 2000/XP Driver for DeVaSys USBLPT-PD11 USB Boards</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 337px;" id="HM_Item1_18">USB Driver for the Cypress USB Starter Kit</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 354px;" id="HM_Item1_19"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="ecp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div><div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 166px;" id="HM_Menu2"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item2_1">Ethernet &amp; TCP/IP Interfaces</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 17px;" id="HM_Item2_2">Embedded Linux, Setting up the Development Environment</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 50px;" id="HM_Item2_3">Embedded Linux, Understanding the Build Tools</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 83px;" id="HM_Item2_4">Embedded Linux, Building gcc-2.95.3 m68k-elf for uClinux</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 116px;" id="HM_Item2_5">Embedded Linux, BFLT Binary Flat Format</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 133px;" id="HM_Item2_6">Exploring the Netcomm NB5</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 150px;" id="HM_Item2_7"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="ecp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div><div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 268px;" id="HM_Menu3"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item3_1">Standard Parallel Port (SPP)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 17px;" id="HM_Item3_2">Enhanced Parallel Port (EPP)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 34px;" id="HM_Item3_3">Extended Capabilities Parallel Port (ECP)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 51px;" id="HM_Item3_4">Parallel Port Debug Tool</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 68px;" id="HM_Item3_5">Parallel Port LCD Interface Example</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 85px;" id="HM_Item3_6">RS-232 Hardware &amp; Software Registers</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 102px;" id="HM_Item3_7">RS-232 Low Level Programming &amp; External Hardware</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 135px;" id="HM_Item3_8">Using Interrupts (PC)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 152px;" id="HM_Item3_9">Interfacing Example - Analog Sampling Via the RS-232 Port</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 185px;" id="HM_Item3_10">Interfacing Example - Connecting a LCD Module to the RS-232 Port</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 218px;" id="HM_Item3_11">Quick and Simple RS-232 Terminal</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 235px;" id="HM_Item3_12">RS-232 Protocol Analyser</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 252px;" id="HM_Item3_13"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="ecp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div><div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 183px;" id="HM_Menu4"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item4_1">PortTalk - A Windows NT I/O Port Device Driver</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 33px;" id="HM_Item4_2">Universal Serial Bus Device Driver Development </div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 66px;" id="HM_Item4_3">Interrupts and Deferred Procedure Calls on Windows NT4/2000/XP </div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 99px;" id="HM_Item4_4">USB Driver for the Cypress USB Starter Kit</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 116px;" id="HM_Item4_5">Device Driver Fiddler (tools)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 133px;" id="HM_Item4_6">Windows NT Device Driver Installer (tools)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 150px;" id="HM_Item4_7">Device Driver Remover Win9x (tools)</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 167px;" id="HM_Item4_8"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="ecp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div><div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 383px;" id="HM_Menu5"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item5_1">CMOS Digital Image Sensors and Lenses</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 17px;" id="HM_Item5_2">Generate Ring Tones on your PIC16F87x Microcontroller</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 50px;" id="HM_Item5_3">Interfacing the AT Keyboard</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 67px;" id="HM_Item5_4">How does the Microchip ICD Work?</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 84px;" id="HM_Item5_5">Trust-No-Exe</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 101px;" id="HM_Item5_6">Command Line Process Viewer/Killer/Suspender for Windows NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 134px;" id="HM_Item5_7">BeyondExec - Spawn Processes on Remote Windows NT/2000/XP WorkStations</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 167px;" id="HM_Item5_8">Beyond Logic Shutdown Utility for NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 184px;" id="HM_Item5_9">Bmail - Command Line SMTP Mailer for Batch Jobs</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 217px;" id="HM_Item5_10">Delete/Copy by Owner utility for Windows NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 250px;" id="HM_Item5_11">Win32 Pipe Security Editor Windows NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 283px;" id="HM_Item5_12">Console Computer Information Utility for 2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 316px;" id="HM_Item5_13">SMART &amp; Simple for NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 333px;" id="HM_Item5_14">Kodak DC215 Support and FAQ</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 350px;" id="HM_Item5_15">South Australian Electricity Generation</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 367px;" id="HM_Item5_16"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="ecp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div></body></html>

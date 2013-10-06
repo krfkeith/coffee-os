@@ -1,0 +1,14 @@
+for lazarus application framework compatibility in FUTURE we need:
+
+dos[fileops],crt[video] --done already.
+
+classes,windows units (or a interface to our windows units.THis is lacking so far.)
+[at least.]
+
+[windows unit can be either emulated to t or Gvision style(RECOMMENDED) or built from scratch.]
+
+this is unless you want to write all your apps with tvision. the interface can only get so good.
+
+we DO use freevision for this, but without borland code.
+we do this in tvision by default anyway. it just looks like ass in console mode with video unit.
+

@@ -1,0 +1,19 @@
+include .\make.rules
+all: coffee
+coffee:
+	make -C rtl
+	make -C kernel
+# This is so our stage2 loader can load us..
+
+#	objcopy -O binary -I elf32-i386 iso\boot\coffee iso\boot\coffee.bin
+# This works up until Debian squeeze, which has moved onto genisoimage and xorriso.
+	mkisofs -R -iso-level 4 -b "stage2_eltorito" -no-emul-boot -boot-load-size 4 -boot-info-table -o coffee.iso iso
+
+#	genisoimage -R -iso-level 4 -bboot\grub\stage2_eltorito   -no-emul-boot -boot-load-size 4 \
+#		-boot-info-table -o coffee.iso iso
+
+clean:
+	make -C rtl clean
+	make -C kernel clean
+	erase coffee.iso
+	erase iso\boot\coffee

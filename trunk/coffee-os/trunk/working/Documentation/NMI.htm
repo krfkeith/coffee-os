@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
+
+	
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				<meta name="keywords" content="Non Maskable Interrupt,PIT">
+		<link rel="shortcut icon" href="http://wiki.osdev.org/favicon.ico">
+		<link rel="search" type="application/opensearchdescription+xml" href="http://wiki.osdev.org/opensearch_desc.php" title="OSDev Wiki (English)">
+<link rel="alternate" type="application/rss+xml" title="OSDev Wiki RSS Feed" href="http://wiki.osdev.org/index.php?title=Special:Recentchanges&amp;feed=rss">
+<link rel="alternate" type="application/atom+xml" title="OSDev Wiki Atom Feed" href="http://wiki.osdev.org/index.php?title=Special:Recentchanges&amp;feed=atom">
+		<title>Non Maskable Interrupt - OSDev Wiki</title>
+		<style type="text/css" media="screen, projection">/*<![CDATA[*/
+			@import "/skins/common/shared.css?116";
+			@import "/skins/monobook/main.css?116";
+		/*]]>*/</style>
+		<link rel="stylesheet" type="text/css" media="print" href="NMI_files/commonPrint.css">
+		<!--[if lt IE 5.5000]><style type="text/css">@import "/skins/monobook/IE50Fixes.css?116";</style><![endif]-->
+		<!--[if IE 5.5000]><style type="text/css">@import "/skins/monobook/IE55Fixes.css?116";</style><![endif]-->
+		<!--[if IE 6]><style type="text/css">@import "/skins/monobook/IE60Fixes.css?116";</style><![endif]-->
+		<!--[if IE 7]><style type="text/css">@import "/skins/monobook/IE70Fixes.css?116";</style><![endif]-->
+		<!--[if lt IE 7]><script type="text/javascript" src="/skins/common/IEFixes.js?116"></script>
+		<meta http-equiv="imagetoolbar" content="no" /><![endif]-->
+		
+		<script type="text/javascript">/*<![CDATA[*/
+var skin = "monobook";
+var stylepath = "/skins";
+var wgArticlePath = "/$1";
+var wgScriptPath = "";
+var wgScript = "/index.php";
+var wgServer = "http://wiki.osdev.org";
+var wgCanonicalNamespace = "";
+var wgCanonicalSpecialPageName = false;
+var wgNamespaceNumber = 0;
+var wgPageName = "Non_Maskable_Interrupt";
+var wgTitle = "Non Maskable Interrupt";
+var wgAction = "view";
+var wgRestrictionEdit = [];
+var wgRestrictionMove = [];
+var wgArticleId = "1913";
+var wgIsArticle = true;
+var wgUserName = null;
+var wgUserGroups = null;
+var wgUserLanguage = "en";
+var wgContentLanguage = "en";
+var wgBreakFrames = false;
+var wgCurRevisionId = "10677";
+var wgVersion = "1.12.0";
+var wgEnableAPI = true;
+var wgEnableWriteAPI = false;
+/*]]>*/</script>
+                
+		<script type="text/javascript" src="NMI_files/wikibits.js"><!-- wikibits js --></script>
+		<!-- Head Scripts -->
+		<script type="text/javascript" src="NMI_files/ajax.js"></script>
+		<script type="text/javascript" src="NMI_files/index.php"><!-- site js --></script>
+		<style type="text/css">/*<![CDATA[*/
+@import "/index.php?title=MediaWiki:Common.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+@import "/index.php?title=MediaWiki:Monobook.css&usemsgcache=yes&action=raw&ctype=text/css&smaxage=18000";
+@import "/index.php?title=-&action=raw&gen=css&maxage=18000";
+/*]]>*/</style>
+	</head><body class="mediawiki ns-0 ltr page-Non_Maskable_Interrupt">
+	<div id="globalWrapper">
+		<div id="column-content">
+	<div id="content">
+		<a name="top" id="top"></a>
+				<h1 class="firstHeading">Non Maskable Interrupt</h1>
+		<div id="bodyContent">
+			<h3 id="siteSub">From OSDev Wiki</h3>
+			<div id="contentSub">(Redirected from <a href="http://wiki.osdev.org/index.php?title=NMI&amp;redirect=no" title="NMI">NMI</a>)</div>
+									<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>			<!-- start content -->
+			<p>The NMI ("Non Maskable Interrupt") is a hardware-driven interrupt 
+much like the PIC interrupts, but the NMI goes directly to the CPU, not 
+via the PIC controller.
+</p><p>Luckily, you <b>can</b> have control over the NMI -- otherwise you would be in deep trouble.
+</p>
+<a name="About"></a><h2> <span class="mw-headline">About</span></h2>
+<p>NMI occur for RAM errors and unrecoverable hardware problems. For 
+newer computers these things may be handled using machine check 
+exceptions and/or SMI. For the newest chipsets (at least for Intel) 
+there's also a pile of TCO stuff ("total cost of ownership") that is 
+tied into it all (with a special "TCO IRQ" and connections to SMI/SMM, 
+etc). Somehow all of the TCO stuff is/can be connected to an onboard 
+ethernet controller, and (at least part of it) is intended for remote 
+monitoring of the system. Unfortunately the chipset documentation I've 
+been reading can't tell me how BIOSs normally configure the chipset, and
+ the chipsets themselves support several different options in each case.
+ For example, for a RAM error it could be handled by the chipset itself,
+ it could generate an SMI (where the BIOS/SMM handler does "RAM 
+scrubbing" in software), it could generate a "TCO interrupt", etc. If 
+you add it all up it's a huge complex mess (TCO + SMI + SMBus + 
+northbridge + PCI bus/controller/s + PCI-to-LPC-bridge + god-knows-what)
+ that can be completely different between motherboards (even 
+motherboards with the same chipset).
+</p><p>The short version of this story is that there's only really 2 
+reasons for an NMI. The first reason is a hardware failure. The second 
+reason is a "watchdog timer", which can be used to detect when the 
+kernel itself locks up (and is sometimes also used for more accurate 
+profiling as it allows EIP to be sampled even when IRQs are disabled).
+</p><p>If a hardware failure caused an NMI then there's no way to figure
+ out which piece of hardware caused the NMI. In this case I'd try to do 
+the least possible in an attempt to tell the user that a hardware 
+failure occurred, but at the end of the day you can't expect any OS to 
+work sanely on faulty hardware and there's nothing software can do to 
+work around the hardware failure anyway.
+</p><p>For the watchdog timer, it must be setup by the OS first. This 
+can actually be done even when the chipset itself doesn't have a special
+ watchdog timer for it (e.g. setting the PIT, RTC/CMOS IRQ or a HPET IRQ
+ to "NMI, send to all CPUs" in the I/O APIC). In this case you want the 
+watchdog timer to be fast (i.e. no slow hardware task switching and 
+cache flushing) and you'd also want all CPUs to share the same timer, 
+which means all CPUs would receive the same IRQ at the same time (which 
+brings me back to the busy flag in your TSS).
+</p><p>As an alternative, you could also use the local APIC's timer or 
+the performance monitoring counter overflow for a "per CPU" watchdog 
+timer. Unfortunately these things are usually used for other purposes.
+</p>
+<a name="Usage"></a><h2> <span class="mw-headline">Usage</span></h2>
+<p>The NMI is "turned on" (set high) by the memory module when a memory parity error occurs.
+</p><p>You have to be careful about disabling the NMI and the PIC for 
+extended periods of time: your system will hang unless it has a failsafe
+ timer! (You've always got one, as long as you don't kill the <a href="http://wiki.osdev.org/PIT" class="mw-redirect" title="PIT">PIT</a> timer.)
+</p>
+<pre>/* enable the NMI */
+void NMI_enable(void)
+{
+   outb(0x70, inb(0x70)&amp;0x7F);
+}
+</pre>
+<pre>/* disable the NMI */
+void NMI_disable(void)
+{
+   outb(0x70, inb(0x70)|0x80);
+}
+</pre>
+<p>When an NMI occurs you can check the system control port A and B at 
+io addresses 0x92 and 0x61 respectively to get an indication of what 
+caused the error:
+</p><p>System Control Port A (0x92) layout:
+</p>
+<table style="margin-top: 1em; margin-bottom: 1em; background: none repeat scroll 0% 0% rgb(249, 249, 249); border: 1px solid rgb(170, 170, 170); border-collapse: collapse;" border="2" cellpadding="4" cellspacing="0">
+<tbody><tr>
+<th>BIT
+</th><th>Description
+</th></tr>
+<tr>
+<td>0</td><td>Alternate hot reset
+</td></tr>
+<tr>
+<td>1</td><td>Alternate gate A20
+</td></tr>
+<tr>
+<td>2</td><td>Reserved
+</td></tr>
+<tr>
+<td>3</td><td>Security Lock
+</td></tr>
+<tr>
+<td>4*</td><td>Watchdog timer status
+</td></tr>
+<tr>
+<td>5</td><td>Reserved
+</td></tr>
+<tr>
+<td>6</td><td>HDD 2 drive activity
+</td></tr>
+<tr>
+<td>7</td><td>HDD 1 drive activity
+</td></tr></tbody></table>
+<p>System Control Port B (0x61)
+</p>
+<table style="margin-top: 1em; margin-bottom: 1em; background: none repeat scroll 0% 0% rgb(249, 249, 249); border: 1px solid rgb(170, 170, 170); border-collapse: collapse;" border="2" cellpadding="4" cellspacing="0">
+<tbody><tr>
+<th>Bit
+</th><th>Description
+</th></tr>
+<tr>
+<td>0</td><td>Timer 2 tied to speaker
+</td></tr>
+<tr>
+<td>1</td><td>Speaker data enable
+</td></tr>
+<tr>
+<td>2</td><td>Parity check enable
+</td></tr>
+<tr>
+<td>3</td><td>Channel check enable
+</td></tr>
+<tr>
+<td>4</td><td>Refresh request
+</td></tr>
+<tr>
+<td>5</td><td>Timer 2 output
+</td></tr>
+<tr>
+<td>6*</td><td>Channel check
+</td></tr>
+<tr>
+<td>7*</td><td>Parity check
+</td></tr></tbody></table>
+<p>The important bits are indicated with an '*'.  The Channel Check bit 
+indicates a failure on the bus, probably by a peripheral device such as a
+ modem, sound card, NIC, etc, while the Parity check bit indicates a 
+memory read or write failure.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 6/1000000
+Post-expand include size: 308/2097152 bytes
+Template argument size: 0/2097152 bytes
+-->
+
+<!-- Saved in parser cache with key wikidb:pcache:idhash:1913-0!1!0!!en!2!edit=0 and timestamp 20101114140557 -->
+<div class="printfooter">
+Retrieved from "<a href="http://wiki.osdev.org/Non_Maskable_Interrupt">http://wiki.osdev.org/Non_Maskable_Interrupt</a>"</div>
+			<div id="catlinks"><p class="catlinks"><a href="http://wiki.osdev.org/Special:Categories" title="Special:Categories">Category</a>: <span dir="ltr"><a href="http://wiki.osdev.org/Category:Interrupts" title="Category:Interrupts">Interrupts</a></span></p></div>			<!-- end content -->
+			<div class="visualClear"></div>
+		</div>
+	</div>
+		</div>
+		<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+					 <li id="ca-nstab-main" class="selected"><a href="http://wiki.osdev.org/Non_Maskable_Interrupt" title="View the content page [alt-c]" accesskey="c">Page</a></li>
+					 <li id="ca-talk"><a href="http://wiki.osdev.org/Talk:Non_Maskable_Interrupt" title="Discussion about the content page [alt-t]" accesskey="t">Discussion</a></li>
+					 <li id="ca-viewsource"><a href="http://wiki.osdev.org/index.php?title=Non_Maskable_Interrupt&amp;action=edit" title="This page is protected. You can view its source. [alt-e]" accesskey="e">View source</a></li>
+					 <li id="ca-history"><a href="http://wiki.osdev.org/index.php?title=Non_Maskable_Interrupt&amp;action=history" title="Past versions of this page. [alt-h]" accesskey="h">History</a></li>
+				</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="http://wiki.osdev.org/index.php?title=Special:Userlogin&amp;returnto=Non_Maskable_Interrupt" title="You are encouraged to log in, it is not mandatory however. [alt-o]" accesskey="o">Log in / create account</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(&quot;/skins/common/images/osdev.png&quot;);" href="http://wiki.osdev.org/Main_Page" title="Visit the Main Page [alt-z]" accesskey="z"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+		<div class="portlet" id="p-navigation">
+		<h5>Navigation</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage"><a href="http://wiki.osdev.org/Main_Page" title="Visit the Main Page [alt-z]" accesskey="z">Main Page</a></li>
+				<li id="n-portal"><a href="http://forum.osdev.org/" title="About the project, what you can do, where to find things">Forums</a></li>
+				<li id="n-FAQ"><a href="http://wiki.osdev.org/Category:FAQ">FAQ</a></li>
+				<li id="n-OS-Projects"><a href="http://wiki.osdev.org/Projects">OS Projects</a></li>
+				<li id="n-randompage"><a href="http://wiki.osdev.org/Special:Random" title="Load a random page [alt-x]" accesskey="x">Random page</a></li>
+			</ul>
+		</div>
+	</div>
+		<div class="portlet" id="p-about">
+		<h5>About</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-This-site"><a href="http://wiki.osdev.org/OSDevWiki:About">This site</a></li>
+				<li id="n-Joining"><a href="http://wiki.osdev.org/OSDevWiki:Joining">Joining</a></li>
+				<li id="n-Editing-help"><a href="http://wiki.osdev.org/OSDevWiki:Editing">Editing help</a></li>
+				<li id="n-recentchanges"><a href="http://wiki.osdev.org/Special:Recentchanges" title="The list of recent changes in the wiki. [alt-r]" accesskey="r">Recent changes</a></li>
+			</ul>
+		</div>
+	</div>
+		<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/Special:Search" id="searchform"><div>
+				<input id="searchInput" name="search" title="Search OSDev Wiki [alt-f]" accesskey="f" type="text">
+				<input name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" type="submit">&nbsp;
+				<input name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" type="submit">
+			</div></form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="http://wiki.osdev.org/Special:Whatlinkshere/Non_Maskable_Interrupt" title="List of all wiki pages that link here [alt-j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="http://wiki.osdev.org/Special:Recentchangeslinked/Non_Maskable_Interrupt" title="Recent changes in pages linked from this page [alt-k]" accesskey="k">Related changes</a></li>
+<li id="t-upload"><a href="http://wiki.osdev.org/Special:Upload" title="Upload files [alt-u]" accesskey="u">Upload file</a></li>
+<li id="t-specialpages"><a href="http://wiki.osdev.org/Special:Specialpages" title="List of all special pages [alt-q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="http://wiki.osdev.org/index.php?title=Non_Maskable_Interrupt&amp;printable=yes" title="Printable version of this page [alt-p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="http://wiki.osdev.org/index.php?title=Non_Maskable_Interrupt&amp;oldid=10677" title="Permanent link to this version of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+		</div><!-- end of the left (by default at least) column -->
+			<div class="visualClear"></div>
+			<div id="footer">
+				<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="NMI_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki"></a></div>
+			<ul id="f-list">
+				<li id="lastmod"> This page was last modified 15:49, 6 September 2010.</li>
+				<li id="viewcount">This page has been accessed 11,594 times.</li>
+				<li id="privacy"><a href="http://wiki.osdev.org/OSDev_Wiki:Privacy_policy" title="OSDev Wiki:Privacy policy">Privacy policy</a></li>
+				<li id="about"><a href="http://wiki.osdev.org/OSDev_Wiki:About" title="OSDev Wiki:About">About OSDev Wiki</a></li>
+				<li id="disclaimer"><a href="http://wiki.osdev.org/OSDev_Wiki:General_disclaimer" title="OSDev Wiki:General disclaimer">Disclaimers</a></li>
+			</ul>
+		</div>
+		
+	
+		<script type="text/javascript">if (window.runOnloadHook) runOnloadHook();</script>
+</div>
+<!-- Served in 0.196 secs. --></body></html>

@@ -1,0 +1,3 @@
+if it isnt setup in isr/irq (and not int 10).....dont expect it to work.
+
+Includes INT 33(MOUSE) functions.REMEMBER, this is PROTECTED MODE, not REAL MODE.

@@ -1,0 +1,469 @@
+Intel MMX Instruction Set
+also extra Cyrix extensions.
+
+
+  A.26 `EMMS': Empty MMX State
+
+       EMMS                          ; 0F 77                [PENT,MMX]
+
+       `EMMS' sets the FPU tag word (marking which floating-point registers
+       are available) to all ones, meaning all registers are available for
+       the FPU to use. It should be used after executing MMX instructions
+       and before executing any subsequent floating-point operations.
+
+ A.103 `MOVD': Move Doubleword to/from MMX Register
+
+       MOVD mmxreg,r/m32             ; 0F 6E /r             [PENT,MMX] 
+       MOVD r/m32,mmxreg             ; 0F 7E /r             [PENT,MMX]
+
+       `MOVD' copies 32 bits from its source (second) operand into its
+       destination (first) operand. When the destination is a 64-bit MMX
+       register, the top 32 bits are set to zero.
+
+ A.104 `MOVQ': Move Quadword to/from MMX Register
+
+       MOVQ mmxreg,r/m64             ; 0F 6F /r             [PENT,MMX] 
+       MOVQ r/m64,mmxreg             ; 0F 7F /r             [PENT,MMX]
+
+       `MOVQ' copies 64 bits from its source (second) operand into its
+       destination (first) operand.
+
+ A.113 `PACKSSDW', `PACKSSWB', `PACKUSWB': Pack Data
+
+       PACKSSDW mmxreg,r/m64         ; 0F 6B /r             [PENT,MMX] 
+       PACKSSWB mmxreg,r/m64         ; 0F 63 /r             [PENT,MMX] 
+       PACKUSWB mmxreg,r/m64         ; 0F 67 /r             [PENT,MMX]
+
+       All these instructions start by forming a notional 128-bit word by
+       placing the source (second) operand on the left of the destination
+       (first) operand. `PACKSSDW' then splits this 128-bit word into four
+       doublewords, converts each to a word, and loads them side by side
+       into the destination register; `PACKSSWB' and `PACKUSWB' both split
+       the 128-bit word into eight words, converts each to a byte, and
+       loads _those_ side by side into the destination register.
+
+       `PACKSSDW' and `PACKSSWB' perform signed saturation when reducing
+       the length of numbers: if the number is too large to fit into the
+       reduced space, they replace it by the largest signed number (`7FFFh'
+       or `7Fh') that _will_ fit, and if it is too small then they replace
+       it by the smallest signed number (`8000h' or `80h') that will fit.
+       `PACKUSWB' performs unsigned saturation: it treats its input as
+       unsigned, and replaces it by the largest unsigned number that will
+       fit.
+
+ A.114 `PADDxx': MMX Packed Addition
+
+       PADDB mmxreg,r/m64            ; 0F FC /r             [PENT,MMX] 
+       PADDW mmxreg,r/m64            ; 0F FD /r             [PENT,MMX] 
+       PADDD mmxreg,r/m64            ; 0F FE /r             [PENT,MMX]
+
+       PADDSB mmxreg,r/m64           ; 0F EC /r             [PENT,MMX] 
+       PADDSW mmxreg,r/m64           ; 0F ED /r             [PENT,MMX]
+
+       PADDUSB mmxreg,r/m64          ; 0F DC /r             [PENT,MMX] 
+       PADDUSW mmxreg,r/m64          ; 0F DD /r             [PENT,MMX]
+
+       `PADDxx' all perform packed addition between their two 64-bit
+       operands, storing the result in the destination (first) operand. The
+       `PADDxB' forms treat the 64-bit operands as vectors of eight bytes,
+       and add each byte individually; `PADDxW' treat the operands as
+       vectors of four words; and `PADDD' treats its operands as vectors of
+       two doublewords.
+
+       `PADDSB' and `PADDSW' perform signed saturation on the sum of each
+       pair of bytes or words: if the result of an addition is too large or
+       too small to fit into a signed byte or word result, it is clipped
+       (saturated) to the largest or smallest value which _will_ fit.
+       `PADDUSB' and `PADDUSW' similarly perform unsigned saturation,
+       clipping to `0FFh' or `0FFFFh' if the result is larger than that.
+
+ A.115 `PADDSIW': MMX Packed Addition to Implicit Destination
+
+       PADDSIW mmxreg,r/m64          ; 0F 51 /r             [CYRIX,MMX]
+
+       `PADDSIW', specific to the Cyrix extensions to the MMX instruction
+       set, performs the same function as `PADDSW', except that the result
+       is not placed in the register specified by the first operand, but
+       instead in the register whose number differs from the first operand
+       only in the last bit. So `PADDSIW MM0,MM2' would put the result in
+       `MM1', but `PADDSIW MM1,MM2' would put the result in `MM0'.
+
+ A.116 `PAND', `PANDN': MMX Bitwise AND and AND-NOT
+
+       PAND mmxreg,r/m64             ; 0F DB /r             [PENT,MMX] 
+       PANDN mmxreg,r/m64            ; 0F DF /r             [PENT,MMX]
+
+       `PAND' performs a bitwise AND operation between its two operands
+       (i.e. each bit of the result is 1 if and only if the corresponding
+       bits of the two inputs were both 1), and stores the result in the
+       destination (first) operand.
+
+       `PANDN' performs the same operation, but performs a one's complement
+       operation on the destination (first) operand first.
+
+ A.117 `PAVEB': MMX Packed Average
+
+       PAVEB mmxreg,r/m64            ; 0F 50 /r             [CYRIX,MMX]
+
+       `PAVEB', specific to the Cyrix MMX extensions, treats its two
+       operands as vectors of eight unsigned bytes, and calculates the
+       average of the corresponding bytes in the operands. The resulting
+       vector of eight averages is stored in the first operand.
+
+ A.118 `PCMPxx': MMX Packed Comparison
+
+       PCMPEQB mmxreg,r/m64          ; 0F 74 /r             [PENT,MMX] 
+       PCMPEQW mmxreg,r/m64          ; 0F 75 /r             [PENT,MMX] 
+       PCMPEQD mmxreg,r/m64          ; 0F 76 /r             [PENT,MMX]
+
+       PCMPGTB mmxreg,r/m64          ; 0F 64 /r             [PENT,MMX] 
+       PCMPGTW mmxreg,r/m64          ; 0F 65 /r             [PENT,MMX] 
+       PCMPGTD mmxreg,r/m64          ; 0F 66 /r             [PENT,MMX]
+
+       The `PCMPxx' instructions all treat their operands as vectors of
+       bytes, words, or doublewords; corresponding elements of the source
+       and destination are compared, and the corresponding element of the
+       destination (first) operand is set to all zeros or all ones
+       depending on the result of the comparison.
+
+       `PCMPxxB' treats the operands as vectors of eight bytes, `PCMPxxW'
+       treats them as vectors of four words, and `PCMPxxD' as two
+       doublewords.
+
+       `PCMPEQx' sets the corresponding element of the destination operand
+       to all ones if the two elements compared are equal; `PCMPGTx' sets
+       the destination element to all ones if the element of the first
+       (destination) operand is greater (treated as a signed integer) than
+       that of the second (source) operand.
+
+ A.119 `PDISTIB': MMX Packed Distance and Accumulate with Implied Register
+
+       PDISTIB mmxreg,mem64          ; 0F 54 /r             [CYRIX,MMX]
+
+       `PDISTIB', specific to the Cyrix MMX extensions, treats its two
+       input operands as vectors of eight unsigned bytes. For each byte
+       position, it finds the absolute difference between the bytes in that
+       position in the two input operands, and adds that value to the byte
+       in the same position in the implied output register. The addition is
+       saturated to an unsigned byte in the same way as `PADDUSB'.
+
+       The implied output register is found in the same way as `PADDSIW'
+       (section A.115).
+
+       Note that `PDISTIB' cannot take a register as its second source
+       operand.
+
+ A.120 `PMACHRIW': MMX Packed Multiply and Accumulate with Rounding
+
+       PMACHRIW mmxreg,mem64         ; 0F 5E /r             [CYRIX,MMX]
+
+       `PMACHRIW' acts almost identically to `PMULHRIW' (section A.123),
+       but instead of _storing_ its result in the implied destination
+       register, it _adds_ its result, as four packed words, to the implied
+       destination register. No saturation is done: the addition can wrap
+       around.
+
+       Note that `PMACHRIW' cannot take a register as its second source
+       operand.
+
+ A.121 `PMADDWD': MMX Packed Multiply and Add
+
+       PMADDWD mmxreg,r/m64          ; 0F F5 /r             [PENT,MMX]
+
+       `PMADDWD' treats its two inputs as vectors of four signed words. It
+       multiplies corresponding elements of the two operands, giving four
+       signed doubleword results. The top two of these are added and placed
+       in the top 32 bits of the destination (first) operand; the bottom
+       two are added and placed in the bottom 32 bits.
+
+ A.122 `PMAGW': MMX Packed Magnitude
+
+       PMAGW mmxreg,r/m64            ; 0F 52 /r             [CYRIX,MMX]
+
+       `PMAGW', specific to the Cyrix MMX extensions, treats both its
+       operands as vectors of four signed words. It compares the absolute
+       values of the words in corresponding positions, and sets each word
+       of the destination (first) operand to whichever of the two words in
+       that position had the larger absolute value.
+
+ A.123 `PMULHRW', `PMULHRIW': MMX Packed Multiply High with Rounding
+
+       PMULHRW mmxreg,r/m64          ; 0F 59 /r             [CYRIX,MMX] 
+       PMULHRIW mmxreg,r/m64         ; 0F 5D /r             [CYRIX,MMX]
+
+       These instructions, specific to the Cyrix MMX extensions, treat
+       their operands as vectors of four signed words. Words in
+       corresponding positions are multiplied, to give a 32-bit value in
+       which bits 30 and 31 are guaranteed equal. Bits 30 to 15 of this
+       value (bit mask `0x7FFF8000') are taken and stored in the
+       corresponding position of the destination operand, after first
+       rounding the low bit (equivalent to adding `0x4000' before
+       extracting bits 30 to 15).
+
+       For `PMULHRW', the destination operand is the first operand; for
+       `PMULHRIW' the destination operand is implied by the first operand
+       in the manner of `PADDSIW' (section A.115).
+
+ A.124 `PMULHW', `PMULLW': MMX Packed Multiply
+
+       PMULHW mmxreg,r/m64           ; 0F E5 /r             [PENT,MMX] 
+       PMULLW mmxreg,r/m64           ; 0F D5 /r             [PENT,MMX]
+
+       `PMULxW' treats its two inputs as vectors of four signed words. It
+       multiplies corresponding elements of the two operands, giving four
+       signed doubleword results.
+
+       `PMULHW' then stores the top 16 bits of each doubleword in the
+       destination (first) operand; `PMULLW' stores the bottom 16 bits of
+       each doubleword in the destination operand.
+
+ A.125 `PMVccZB': MMX Packed Conditional Move
+
+       PMVZB mmxreg,mem64            ; 0F 58 /r             [CYRIX,MMX] 
+       PMVNZB mmxreg,mem64           ; 0F 5A /r             [CYRIX,MMX] 
+       PMVLZB mmxreg,mem64           ; 0F 5B /r             [CYRIX,MMX] 
+       PMVGEZB mmxreg,mem64          ; 0F 5C /r             [CYRIX,MMX]
+
+       These instructions, specific to the Cyrix MMX extensions, perform
+       parallel conditional moves. The two input operands are treated as
+       vectors of eight bytes. Each byte of the destination (first) operand
+       is either written from the corresponding byte of the source (second)
+       operand, or left alone, depending on the value of the byte in the
+       _implied_ operand (specified in the same way as `PADDSIW', in
+       section A.115).
+
+       `PMVZB' performs each move if the corresponding byte in the implied
+       operand is zero. `PMVNZB' moves if the byte is non-zero. `PMVLZB'
+       moves if the byte is less than zero, and `PMVGEZB' moves if the byte
+       is greater than or equal to zero.
+
+       Note that these instructions cannot take a register as their second
+       source operand.
+
+ A.129 `POR': MMX Bitwise OR
+
+       POR mmxreg,r/m64              ; 0F EB /r             [PENT,MMX]
+
+       `POR' performs a bitwise OR operation between its two operands (i.e.
+       each bit of the result is 1 if and only if at least one of the
+       corresponding bits of the two inputs was 1), and stores the result
+       in the destination (first) operand.
+
+ A.130 `PSLLx', `PSRLx', `PSRAx': MMX Bit Shifts
+
+       PSLLW mmxreg,r/m64            ; 0F F1 /r             [PENT,MMX] 
+       PSLLW mmxreg,imm8             ; 0F 71 /6 ib          [PENT,MMX]
+
+       PSLLD mmxreg,r/m64            ; 0F F2 /r             [PENT,MMX] 
+       PSLLD mmxreg,imm8             ; 0F 72 /6 ib          [PENT,MMX]
+
+       PSLLQ mmxreg,r/m64            ; 0F F3 /r             [PENT,MMX] 
+       PSLLQ mmxreg,imm8             ; 0F 73 /6 ib          [PENT,MMX]
+
+       PSRAW mmxreg,r/m64            ; 0F E1 /r             [PENT,MMX] 
+       PSRAW mmxreg,imm8             ; 0F 71 /4 ib          [PENT,MMX]
+
+       PSRAD mmxreg,r/m64            ; 0F E2 /r             [PENT,MMX] 
+       PSRAD mmxreg,imm8             ; 0F 72 /4 ib          [PENT,MMX]
+
+       PSRLW mmxreg,r/m64            ; 0F D1 /r             [PENT,MMX] 
+       PSRLW mmxreg,imm8             ; 0F 71 /2 ib          [PENT,MMX]
+
+       PSRLD mmxreg,r/m64            ; 0F D2 /r             [PENT,MMX] 
+       PSRLD mmxreg,imm8             ; 0F 72 /2 ib          [PENT,MMX]
+
+       PSRLQ mmxreg,r/m64            ; 0F D3 /r             [PENT,MMX] 
+       PSRLQ mmxreg,imm8             ; 0F 73 /2 ib          [PENT,MMX]
+
+       `PSxxQ' perform simple bit shifts on the 64-bit MMX registers: the
+       destination (first) operand is shifted left or right by the number
+       of bits given in the source (second) operand, and the vacated bits
+       are filled in with zeros (for a logical shift) or copies of the
+       original sign bit (for an arithmetic right shift).
+
+       `PSxxW' and `PSxxD' perform packed bit shifts: the destination
+       operand is treated as a vector of four words or two doublewords, and
+       each element is shifted individually, so bits shifted out of one
+       element do not interfere with empty bits coming into the next.
+
+       `PSLLx' and `PSRLx' perform logical shifts: the vacated bits at one
+       end of the shifted number are filled with zeros. `PSRAx' performs an
+       arithmetic right shift: the vacated bits at the top of the shifted
+       number are filled with copies of the original top (sign) bit.
+
+ A.131 `PSUBxx': MMX Packed Subtraction
+
+       PSUBB mmxreg,r/m64            ; 0F F8 /r             [PENT,MMX] 
+       PSUBW mmxreg,r/m64            ; 0F F9 /r             [PENT,MMX] 
+       PSUBD mmxreg,r/m64            ; 0F FA /r             [PENT,MMX]
+
+       PSUBSB mmxreg,r/m64           ; 0F E8 /r             [PENT,MMX] 
+       PSUBSW mmxreg,r/m64           ; 0F E9 /r             [PENT,MMX]
+
+       PSUBUSB mmxreg,r/m64          ; 0F D8 /r             [PENT,MMX] 
+       PSUBUSW mmxreg,r/m64          ; 0F D9 /r             [PENT,MMX]
+
+       `PSUBxx' all perform packed subtraction between their two 64-bit
+       operands, storing the result in the destination (first) operand. The
+       `PSUBxB' forms treat the 64-bit operands as vectors of eight bytes,
+       and subtract each byte individually; `PSUBxW' treat the operands as
+       vectors of four words; and `PSUBD' treats its operands as vectors of
+       two doublewords.
+
+       In all cases, the elements of the operand on the right are
+       subtracted from the corresponding elements of the operand on the
+       left, not the other way round.
+
+       `PSUBSB' and `PSUBSW' perform signed saturation on the sum of each
+       pair of bytes or words: if the result of a subtraction is too large
+       or too small to fit into a signed byte or word result, it is clipped
+       (saturated) to the largest or smallest value which _will_ fit.
+       `PSUBUSB' and `PSUBUSW' similarly perform unsigned saturation,
+       clipping to `0FFh' or `0FFFFh' if the result is larger than that.
+
+ A.132 `PSUBSIW': MMX Packed Subtract with Saturation to Implied Destination
+
+       PSUBSIW mmxreg,r/m64          ; 0F 55 /r             [CYRIX,MMX]
+
+       `PSUBSIW', specific to the Cyrix extensions to the MMX instruction
+       set, performs the same function as `PSUBSW', except that the result
+       is not placed in the register specified by the first operand, but
+       instead in the implied destination register, specified as for
+       `PADDSIW' (section A.115).
+
+ A.133 `PUNPCKxxx': Unpack Data
+
+       PUNPCKHBW mmxreg,r/m64        ; 0F 68 /r             [PENT,MMX] 
+       PUNPCKHWD mmxreg,r/m64        ; 0F 69 /r             [PENT,MMX] 
+       PUNPCKHDQ mmxreg,r/m64        ; 0F 6A /r             [PENT,MMX]
+
+       PUNPCKLBW mmxreg,r/m64        ; 0F 60 /r             [PENT,MMX] 
+       PUNPCKLWD mmxreg,r/m64        ; 0F 61 /r             [PENT,MMX] 
+       PUNPCKLDQ mmxreg,r/m64        ; 0F 62 /r             [PENT,MMX]
+
+       `PUNPCKxx' all treat their operands as vectors, and produce a new
+       vector generated by interleaving elements from the two inputs. The
+       `PUNPCKHxx' instructions start by throwing away the bottom half of
+       each input operand, and the `PUNPCKLxx' instructions throw away the
+       top half.
+
+       The remaining elements, totalling 64 bits, are then interleaved into
+       the destination, alternating elements from the second (source)
+       operand and the first (destination) operand: so the leftmost element
+       in the result always comes from the second operand, and the
+       rightmost from the destination.
+
+       `PUNPCKxBW' works a byte at a time, `PUNPCKxWD' a word at a time,
+       and `PUNPCKxDQ' a doubleword at a time.
+
+       So, for example, if the first operand held `0x7A6A5A4A3A2A1A0A' and
+       the second held `0x7B6B5B4B3B2B1B0B', then:
+
+       (*) `PUNPCKHBW' would return `0x7B7A6B6A5B5A4B4A'.
+
+       (*) `PUNPCKHWD' would return `0x7B6B7A6A5B4B5A4A'.
+
+       (*) `PUNPCKHDQ' would return `0x7B6B5B4B7A6A5A4A'.
+
+       (*) `PUNPCKLBW' would return `0x3B3A2B2A1B1A0B0A'.
+
+       (*) `PUNPCKLWD' would return `0x3B2B3A2A1B0B1A0A'.
+
+       (*) `PUNPCKLDQ' would return `0x3B2B1B0B3A2A1A0A'.
+
+ A.134 `PUSH': Push Data on Stack
+
+       PUSH reg16                    ; o16 50+r             [8086] 
+       PUSH reg32                    ; o32 50+r             [386]
+
+       PUSH r/m16                    ; o16 FF /6            [8086] 
+       PUSH r/m32                    ; o32 FF /6            [386]
+
+       PUSH CS                       ; 0E                   [8086] 
+       PUSH DS                       ; 1E                   [8086] 
+       PUSH ES                       ; 06                   [8086] 
+       PUSH SS                       ; 16                   [8086] 
+       PUSH FS                       ; 0F A0                [386] 
+       PUSH GS                       ; 0F A8                [386]
+
+       PUSH imm8                     ; 6A ib                [286] 
+       PUSH imm16                    ; o16 68 iw            [286] 
+       PUSH imm32                    ; o32 68 id            [386]
+
+       `PUSH' decrements the stack pointer (`SP' or `ESP') by 2 or 4, and
+       then stores the given value at `[SS:SP]' or `[SS:ESP]'.
+
+       The address-size attribute of the instruction determines whether
+       `SP' or `ESP' is used as the stack pointer: to deliberately override
+       the default given by the `BITS' setting, you can use an `a16' or
+       `a32' prefix.
+
+       The operand-size attribute of the instruction determines whether the
+       stack pointer is decremented by 2 or 4: this means that segment
+       register pushes in `BITS 32' mode will push 4 bytes on the stack, of
+       which the upper two are undefined. If you need to override that, you
+       can use an `o16' or `o32' prefix.
+
+       The above opcode listings give two forms for general-purpose
+       register push instructions: for example, `PUSH BX' has the two forms
+       `53' and `FF F3'. NASM will always generate the shorter form when
+       given `PUSH BX'. NDISASM will disassemble both.
+
+       Unlike the undocumented and barely supported `POP CS', `PUSH CS' is
+       a perfectly valid and sensible instruction, supported on all
+       processors.
+
+       The instruction `PUSH SP' may be used to distinguish an 8086 from
+       later processors: on an 8086, the value of `SP' stored is the value
+       it has _after_ the push instruction, whereas on later processors it
+       is the value _before_ the push instruction.
+
+ A.135 `PUSHAx': Push All General-Purpose Registers
+
+       PUSHA                         ; 60                   [186] 
+       PUSHAD                        ; o32 60               [386] 
+       PUSHAW                        ; o16 60               [186]
+
+       `PUSHAW' pushes, in succession, `AX', `CX', `DX', `BX', `SP', `BP',
+       `SI' and `DI' on the stack, decrementing the stack pointer by a
+       total of 16.
+
+       `PUSHAD' pushes, in succession, `EAX', `ECX', `EDX', `EBX', `ESP',
+       `EBP', `ESI' and `EDI' on the stack, decrementing the stack pointer
+       by a total of 32.
+
+       In both cases, the value of `SP' or `ESP' pushed is its _original_
+       value, as it had before the instruction was executed.
+
+       `PUSHA' is an alias mnemonic for either `PUSHAW' or `PUSHAD',
+       depending on the current `BITS' setting.
+
+       Note that the registers are pushed in order of their numeric values
+       in opcodes (see section A.2.1).
+
+       See also `POPA' (section A.127).
+
+ A.136 `PUSHFx': Push Flags Register
+
+       PUSHF                         ; 9C                   [186] 
+       PUSHFD                        ; o32 9C               [386] 
+       PUSHFW                        ; o16 9C               [186]
+
+       `PUSHFW' pops a word from the stack and stores it in the bottom 16
+       bits of the flags register (or the whole flags register, on
+       processors below a 386). `PUSHFD' pops a doubleword and stores it in
+       the entire flags register.
+
+       `PUSHF' is an alias mnemonic for either `PUSHFW' or `PUSHFD',
+       depending on the current `BITS' setting.
+
+       See also `POPF' (section A.128).
+
+ A.137 `PXOR': MMX Bitwise XOR
+
+       PXOR mmxreg,r/m64             ; 0F EF /r             [PENT,MMX]
+
+       `PXOR' performs a bitwise XOR operation between its two operands
+       (i.e. each bit of the result is 1 if and only if exactly one of the
+       corresponding bits of the two inputs was 1), and stores the result
+       in the destination (first) operand.

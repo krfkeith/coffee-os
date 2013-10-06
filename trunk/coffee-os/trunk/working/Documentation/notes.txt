@@ -1,0 +1,12 @@
+use irq AND dma if you need spinlocking, dma unit has the spinlocking sephomores already.
+[IRQs can be spinlocked,too]
+NEED esoecially on SMP or with task switching when it gets added.
+
+
+most of the source explains itself. if it doesn't, DOCUMENT IT.
+
+somebody document commandbuffer please.
+the arrow keys are throwing it off as it implements a char buffer incorrectly.
+
+
+--Jazz

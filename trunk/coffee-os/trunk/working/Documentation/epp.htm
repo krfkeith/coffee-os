@@ -1,0 +1,357 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+   <meta name="description" content="Describes interfacing the EPP (Enhanced Parallel Port), complete with register details and waveforms.">
+   <meta name="keywords" content="Parallel Port, Printer Port, IEEE 1284, EPP1.7, EPP1.9, EPP, Enhanced Parallel Port">
+   <title>Interfacing the Parallel Port</title>
+</head><body leftmargin="0" topmargin="0" basefont="" face="ARIAL" marginheight="0" marginwidth="0" background="epp_files/bgyellow.gif">
+
+<style type="text/css">
+#TITLEBLOCK { text-decoration: none; color:#FFFFFF }
+TD,P,FONT {font-family : Arial}
+</style>
+
+<br><center>
+<table boarder="0" width="95%"><tbody><tr>
+  <td width="25%"><center><a href="http://www.beyondlogic.org/"><img src="epp_files/beyondsmall.gif" alt="Beyond Logic" border="0"></a></center></td>
+  <td width="50%"><center>
+
+<script type="text/javascript"><!--
+google_ad_client = "pub-7725444460812017";
+google_ad_width = 468;
+google_ad_height = 60;
+google_ad_format = "468x60_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "0033FF";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript" src="epp_files/show_ads.js">
+</script>
+  <noscript><FONT COLOR=RED>This page is optimised with JavaScript 1.2. Currently your browser has JavaScript switched off.</noscript>
+  </center></td>
+  <td valign="CENTER" align="RIGHT"><br><font face="ARIAL">
+  <script language="javascript" src="epp_files/beyondmenu_plain.js"></script><script language="JavaScript1.2" src="epp_files/HM_ScriptDOM.js" type="text/javascript"></script><font size="-1">Friday, October 8th, 2010</font><br></font></td></tr></tbody></table></center><table frame="Below" width="100%" border="0" cellpadding="1" cellspacing="0"><tbody><tr><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#USB" onmouseover="HM_f_PopUp('elMenu1',event)" onmouseout="HM_f_PopDown('elMenu1')">Universal Serial Bus</a>&nbsp;<img src="epp_files/HM_More_white_down.gif"></b></font></center></td><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#uClinux" onmouseover="HM_f_PopUp('elMenu2',event)" onmouseout="HM_f_PopDown('elMenu2')">Embedded Internet</a>&nbsp;<img src="epp_files/HM_More_white_down.gif"></b></font></center></td><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#Legacy" onmouseover="HM_f_PopUp('elMenu3',event)" onmouseout="HM_f_PopDown('elMenu3')">Legacy Ports</a>&nbsp;<img src="epp_files/HM_More_white_down.gif"></b></font></center></td><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#DeviceDrivers" onmouseover="HM_f_PopUp('elMenu4',event)" onmouseout="HM_f_PopDown('elMenu4')">Device Drivers</a>&nbsp;<img src="epp_files/HM_More_white_down.gif"></b></font></center></td><td nowrap="nowrap" align="center" bgcolor="BLUE"><font face="ARIAL" color="WHITE"><b></b></font><center><font face="ARIAL" color="WHITE"><b><a id="TITLEBLOCK" href="http://www.beyondlogic.org/index.htm#Misc" onmouseover="HM_f_PopUp('elMenu5',event)" onmouseout="HM_f_PopDown('elMenu5')">Miscellaneous</a>&nbsp;<img src="epp_files/HM_More_white_down.gif"></b></font></center></td></tr></tbody></table><br>
+<noscript></TD></TR></TABLE></CENTER></noscript>
+
+<center>
+<table width="95%"><tbody><tr><td>
+<br>
+
+<center><font size="5" color="GREEN">Interfacing the Enhanced Parallel Port</font></center>
+
+<center><br><b><font size="+2">Table of Contents</font></b></center>
+<br>
+<center><a href="#1">Enhanced Parallel Port</a></center>
+<center><a href="#2">EPP Hardware Properties</a></center>
+<center><a href="#3">The EPP Handshake</a></center>
+
+<center><a href="#4">EPP Data Write Cycle</a></center>
+<center><a href="#5">EPP Address Write Cycle</a></center>
+<center><a href="#6">EPP Data Read Cycle</a></center>
+<center><a href="#7">EPP Address Read Cycle</a></center>
+
+<center><a href="#8">The EPP's Software Registers</a></center>
+<center><a href="#9">EPP Programming Considerations</a></center>
+<br><br>
+
+<a name="1"><i><font size="+2">EPP - Enhanced Parallel Port</font></i></a>
+<hr>
+
+<ul>
+<p>
+The Enhanced Parallel Port (EPP) was designed in a joint venture
+between Intel, Xircom &amp; Zenith Data Systems. EPP Ports were first
+specified in the EPP 1.7 standard, and then later included in the
+IEEE 1284 Standard released in 1994. EPP has two standards, EPP 1.7
+and EPP 1.9. There are differences between the two standards which
+may affect the operation of devices. This is further discussed
+latter. EPP has a typical transfer rate in the order of 500KB/S to
+2MB/S. This is achieved by allowing the hardware contained in the
+port to generate handshaking, strobing etc, rather that have the
+software do it, which was the case with Centronics.
+</p>
+<p>
+For the hobbyist, EPP is more commonly used than ECP. EPP differs from
+ECP by the fact that the EPP Port generates and controls all the
+transfers to and from the peripheral. ECP on the other hand requires
+the peripheral to negotiate a reverse channel and control the
+handshaking. This is harder to achieve with common glue logic, thus
+really requires a dedicated controller or ECP Peripheral Chip.
+</p>
+</ul>
+
+<a name="2"><i><font size="+2">EPP Hardware Properties</font></i></a>
+<hr>
+
+<ul>
+<p>
+When using EPP mode, a different set of tasks and labels are assigned to
+each line. These are listed below in Table 4. It's very common to see
+both the SPP and EPP names interchanged in Parallel Port Data Sheets and
+Literature. This can make it very hard to focus on what is exactly
+happening. Therefore all the documentation here will use the EPP names.
+</p>
+
+<center>
+<table width="80%" border="1">
+<tbody><tr><td><center><b>Pin</b></center></td><td><b><center>SPP Signal</center></b></td><td><b><center>EPP Signal</center></b></td><td><b><center>IN/OUT</center></b></td><td><center><b>Function</b></center></td></tr>
+<tr><td><center>1</center></td><td><center>Strobe</center></td><td><center>Write</center></td><td><center>Out</center></td><td>A low on this line indicates a Write, High indicates a Read</td></tr>
+<tr><td><center>2-9</center></td><td><center>Data 0-7</center></td><td><center>Data 0-7</center></td><td><center>In-Out</center></td><td>Data Bus. Bi-directional</td></tr>
+<tr><td><center>10</center></td><td><center>Ack</center></td><td><center>Interrupt</center></td><td><center>In</center></td><td>Interrupt Line. Interrupt occurs on Positive (Rising) Edge.</td></tr>
+<tr><td><center>11</center></td><td><center>Busy</center></td><td><center>Wait</center></td><td><center>In</center></td><td>Used for handshaking. A EPP cycle can be started when low, and finished when high.</td></tr>
+<tr><td><center>12</center></td><td><center>Paper Out / End</center></td><td><center>Spare</center></td><td><center>In</center></td><td>Spare - Not Used in EPP Handshake</td></tr>
+<tr><td><center>13</center></td><td><center>Select</center></td><td><center>Spare</center></td><td><center>In</center></td><td>Spare - Not Used in EPP Handshake</td></tr>
+<tr><td><center>14</center></td><td><center>Auto Linefeed</center></td><td><center>Data Strobe</center></td><td><center>Out</center></td><td>When Low, indicates Data transfer</td></tr>
+<tr><td><center>15</center></td><td><center>Error / Fault</center></td><td><center>Spare</center></td><td><center>In</center></td><td>Spare - Not used in EPP Handshake</td></tr>
+<tr><td><center>16</center></td><td><center>Initialize</center></td><td><center>Reset</center></td><td><center>Out</center></td><td>Reset - Active Low</td></tr>
+<tr><td><center>17</center></td><td><center>Select Printer</center></td><td><center>Address Strobe</center></td><td><center>Out</center></td><td>When low, indicates Address transfer</td></tr>
+<tr><td><center>18-25</center></td><td><center>Ground</center></td><td><center>Ground</center></td><td><center>GND</center></td><td>Ground</td></tr>
+</tbody></table>
+<font size="-1">Table 1. Pin Assignments For Enhanced Parallel Port Connector.</font></center>
+
+<p>
+Paper Out, Select and Error are not defined in the EPP handshake. These
+lines can be utilised in any way by the user. The status of these lines
+can be determined at anytime by viewing the SPP Status Register.
+Unfortunately there are no spare output's. This can become a hassle
+regularly.
+</p>
+</ul>
+
+<a name="3"><i><font size="+2">The EPP Handshake</font></i></a>
+<hr>
+
+<ul>
+
+<p>
+In order to perform a valid exchange of data using EPP we must follow the
+EPP handshake. As the hardware does all the work, this handshake only requires
+to be used for your hardware and not for software as the case with SPP. To initiate
+an EPP cycle your software needs to perform only one I/O operation to the
+relevant EPP Register. Details on this, latter.
+</p>
+
+<a name="4"><i><font size="+2">EPP Data Write Cycle</font></i></a>
+<hr>
+<br>
+<center>
+<table boarder="0">
+<tbody><tr><td>
+<img src="epp_files/eppdatwr.gif" alt="Enhanced Parallel Port Data Write Cycle" border="0">
+<br><center><font size="-1">Figure 1. Enhanced Parallel Port Data Write Cycle.</font></center>
+</td><td>
+<b>1. Program writes to EPP Data Register. (Base + 4)<br></b>
+2. nWrite is placed low. (Low indicates write operation)<br>
+<b>3. Data is placed on Data Lines 0-7.<br></b>
+4. nData Strobe is asserted if Wait is Low (O.K. to start cycle)<br>
+<b>5. Host waits for Acknowledgment by nWait going high (O.K. to end cycle)<br></b>
+6. nData Strobe is de-asserted.<br>
+<b>7. EPP Data Write Cycle Ends.<br></b>
+</td></tr>
+</tbody></table>
+</center>
+<br>
+
+<a name="5"><i><font size="+2">EPP Address Write Cycle</font></i></a>
+<hr>
+<br>
+<center>
+<table boarder="0">
+<tbody><tr><td>
+<img src="epp_files/eppadrwr.gif" alt="Enhanced Parallel Port Address Write Cycle" border="0">
+<br><center><font size="-1">Figure 2. Enhanced Parallel Port Address Write Cycle.</font></center>
+</td><td>
+<b>1. Program writes address to EPP's Address Register (Base + 3)<br></b>
+2. Write is placed low. (Low indicates write operation)<br>
+<b>3. Address is placed on Data Lines 0-7.<br></b>
+4. Address Strobe is asserted if Wait is Low (O.K. to start cycle)<br>
+<b>5. Host waits for Acknowledgment by wait going high (O.K. to end cycle)<br></b>
+6. nAddress Strobe is De-asserted. <br>
+<b>7. EPP Address Write Cycle Ends.<br></b>
+</td></tr>
+</tbody></table>
+</center>
+<br>
+
+<a name="6"><i><font size="+2">EPP Data Read Cycle</font></i></a>
+<hr>
+<br>
+<center>
+<table boarder="0">
+<tbody><tr><td>
+<img src="epp_files/eppdatrd.gif" alt="Enhanced Parallel Port Data Read Cycle" border="0">
+<br><center><font size="-1">Figure 3. Enhanced Parallel Port Data Read Cycle.</font></center>
+</td><td>
+<b>1. Program reads EPP Data Register. (Base + 4)<br></b>
+2. nData Strobe is asserted if Wait is Low (O.K. to start cycle)<br>
+<b>3. Host waits for Acknowledgment by nWait going high<br></b>
+4. Data is read from Parallel Port Pins.<br> 
+<b>5. nData Strobe is de-asserted.<br></b>
+6. EPP Data Read Cycle Ends.<br>
+</td></tr>
+</tbody></table>
+</center>
+<br>
+
+<a name="7"><i><font size="+2">EPP Address Read Cycle</font></i></a>
+<hr>
+<br>
+<center>
+<table boarder="0">
+<tbody><tr><td>
+<img src="epp_files/eppadrrd.gif" alt="Enhanced Parallel Port Address Read Cycle" border="0">
+<br><center><font size="-1">Figure 4. Enhanced Parallel Port Address Read Cycle.</font></center>
+</td><td>
+<b>1. Program reads EPP Address Register. (Base + 3)<br></b>
+2. nAddr Strobe is asserted if Wait is Low (O.K. to start cycle)<br>
+<b>3. Host waits for Acknowledgment by nWait going high<br></b>
+4. Data is read from Parallel Port Pins.<br> 
+<b>5. nAddr Strobe is de-asserted.<br></b>
+6. EPP Address Read Cycle Ends.<br>
+</td></tr>
+</tbody></table>
+</center>
+<br>
+
+<table>
+<tbody><tr>
+<td valign="top"><i>Note
+</i></td>
+
+<td>If implementing EPP 1.7 Handshake (Pre IEEE 1284) the Data and Address
+Strobes can be asserted to start a cycle regardless of the wait state. EPP 1.9 will
+only start a cycle once wait is low. Both EPP 1.7 and EPP 1.9 require the
+wait to be high to finish a cycle.
+</td>
+</tr>
+</tbody></table>
+</ul>
+
+<a name="8"><i><font size="+2">The EPP's Software Registers.</font></i></a>
+<hr>
+<ul>
+<p>
+The EPP Port also has a new set of registers. However 3 of them have been
+inherited from the Standard Parallel Port. Below is a table showing the
+new and existing registers.
+</p>
+
+<br>
+<center>
+<table width="70%" border="1">
+<tbody><tr><td><center><b>Address</b></center></td><td><center><b>Port Name</b></center></td><td><center><b>Read/Write</b></center></td></tr>
+<tr><td><center>Base + 0</center></td><td><center>Data Port (SPP)</center></td><td><center>Write</center></td></tr>
+<tr><td><center>Base + 1</center></td><td><center>Status Port (SPP)</center></td><td><center>Read</center></td></tr>
+<tr><td><center>Base + 2</center></td><td><center>Control Port (SPP)</center></td><td><center>Write</center></td></tr>
+<tr><td><center>Base + 3</center></td><td><center>Address Port (EPP)</center></td><td><center>Read/Write</center></td></tr>
+<tr><td><center>Base + 4</center></td><td><center>Data Port (EPP)</center></td><td><center>Read/Write</center></td></tr>
+<tr><td><center>Base + 5</center></td><td><center>Undefined (16/32bit Transfers)</center></td><td><center>-</center></td></tr>
+<tr><td><center>Base + 6</center></td><td><center>Undefined (32bit Transfers)</center></td><td><center>-</center></td></tr>
+<tr><td><center>Base + 7</center></td><td><center>Undefined (32bit Transfers)</center></td><td><center>-</center></td></tr>
+</tbody></table>
+<font size="-1">Table 2 EPP Registers</font></center>
+
+<p>
+As you can see, the first 3 addresses are exactly the same than the
+Standard Parallel Port Register and behave in exactly the same way.
+Therefore if you used a Enhanced Parallel Port, you can output data
+to Base + 0 in exactly the same fashion than you would if it was a
+Standard Parallel Port (SPP). If you were to connect a printer, and
+use compatibility mode then you would have to check to see if the port
+is busy and then assert &amp; de-assert the strobe using the Control and
+Status Port, then wait for the Ack.
+</p>
+
+<p>
+If you wish to communicate with a EPP compatible device then all you have
+to do, is place any data you wish to send in the EPP Data Register at Base
++ 4 and the card will generate all the necessary handshaking required.
+Likewise if you wish to send an address to your device, then you use the
+EPP Address Register at offset +3.
+</p>
+
+<p>
+Both the EPP Address Register and the EPP Data Register are read / write,
+thus to read data from your device, you can use the same registers. However
+the EPP Printer Card has to initiate a read Cycle as both the nData Strobe
+and nAddress Strobe are outputs. Your device can signal a read request via
+the use of the interrupt and have your ISR perform the Read Operation.
+</p>
+
+<p>
+The Status Port has one little modification. Bit 0, which was reserved in
+the SPP register set, now becomes the EPP Time-out Bit. This bit will
+be set when an EPP time-out occurs. This happens when the nWait line is
+not deasserted within approximately 10uS (depending upon the port) of
+the IOW or IOR line being asserted. The IOW and IOR are the I/O Read
+and Write lines present on the ISA Bus.
+</p>
+
+<p>
+The EPP mode is very depended of the ISA bus timing. When a read cycle
+is performed, the port must undertake the appropriate Read/Write handshake
+and return the data in that ISA cycle. Of course this doesn't occur
+within one ISA cycle, thus the port uses the IOCHRDY (I/O Channel Ready)
+on the ISA bus to introduce wait states, until the cycle completes. Now
+imagine if a EPP Read or Write is started with no peripheral connected?
+The port never gets an acknowledgment (nWait), thus keeps sending requests
+for wait states, and your computer locks up. Therefore the EPP implements
+a type of watchdog, which times out after approximately 10uS.
+</p>
+
+<p>
+The three registers, Base + 5, Base + 6 and Base + 7 can be used for
+16 and 32 bit read/write operations if your port supports it. This
+can further reduce your I/O operations. The Parallel Port can only
+transport 8 bits at a time, thus any 32 or 16 bit word written to
+the Parallel Port will be split into byte size blocks and sent
+via the Parallel Port's 8 data lines.
+</p>
+
+</ul>
+
+<a name="9"><i><font size="+2">EPP Programming Considerations.</font></i></a>
+<hr>
+<ul>
+<i>
+<p>
+EPP only has two main registers and a Time-out Status Flag, What could there
+possibly be to set up?
+</p>
+</i>
+<p>
+Before you can start any EPP cycles by reading and writing to the EPP
+Data and Address Ports, the port must be configured correctly. In the
+idle state, an EPP port should have it's nAddress Strobe, nData Strobe,
+nWrite and nReset lines inactive, high. Some ports require you to set
+this up before starting any EPP Cycle. Therefore our first task is to
+manually initialise these lines using the SPP Registers. Writing
+XXXX0100 to the control port will do this.
+</p>
+<p>
+On some cards, if the Parallel Port is placed in reverse mode, a
+EPP Write cycle cannot be performed. Therefore it is also wise to
+place the Parallel Port in forward mode before using EPP. Clearing
+Bit 5 of the Control Register should result in an more enjoyable
+programming session, without tearing your hair out.
+</p>
+<p>
+The EPP Timeout bit we have already discussed. When this bit is set,
+the EPP port may not function correctly. A common scenario is always
+reading 0xFF from either the Address or Data Cycles. This bit should
+be cleared for reliable operation, and constantly checked.
+</p>
+</ul>
+<br>
+<br>
+</td></tr>
+</tbody></table>
+<font size="2">Copyright 1997-2005 <a href="http://www.beyondlogic.org/about.htm">Craig Peacock</a> - 15th June 2005.</font>
+<br>
+<br>
+</center>
+<div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 370px;" id="HM_Menu1"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item1_1">USB in a Nutshell - Introduction</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 17px;" id="HM_Item1_2">USB in a Nutshell - Hardware</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 34px;" id="HM_Item1_3">USB in a Nutshell - USB Protocols</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 51px;" id="HM_Item1_4">USB in a Nutshell - Endpoint Types</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 68px;" id="HM_Item1_5">USB in a Nutshell - USB Descriptors</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 85px;" id="HM_Item1_6">USB in a Nutshell - USB Requests</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 102px;" id="HM_Item1_7">USB in a Nutshell - Enumeration</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 119px;" id="HM_Item1_8">PIC16F87x and PDIUSBD11 USB Example</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 136px;" id="HM_Item1_9">USB 1.1 Integrated Circuits</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 153px;" id="HM_Item1_10">USB 2.0 Integrated Circuits</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 170px;" id="HM_Item1_11">USB Protocol Analysers</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 187px;" id="HM_Item1_12">USB Device Driver Development</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 204px;" id="HM_Item1_13">USB with the simplicity of RS-232</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 221px;" id="HM_Item1_14">On-The-Go Supplement - Point-to-Point Connectivity for USB.</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 254px;" id="HM_Item1_15">ISP1161 Host Controller for Embedded Systems</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 287px;" id="HM_Item1_16">PDIUSBD11 USB Interface</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 304px;" id="HM_Item1_17">Win 2000/XP Driver for DeVaSys USBLPT-PD11 USB Boards</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 337px;" id="HM_Item1_18">USB Driver for the Cypress USB Starter Kit</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 354px;" id="HM_Item1_19"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="epp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div><div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 166px;" id="HM_Menu2"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item2_1">Ethernet &amp; TCP/IP Interfaces</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 17px;" id="HM_Item2_2">Embedded Linux, Setting up the Development Environment</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 50px;" id="HM_Item2_3">Embedded Linux, Understanding the Build Tools</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 83px;" id="HM_Item2_4">Embedded Linux, Building gcc-2.95.3 m68k-elf for uClinux</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 116px;" id="HM_Item2_5">Embedded Linux, BFLT Binary Flat Format</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 133px;" id="HM_Item2_6">Exploring the Netcomm NB5</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 150px;" id="HM_Item2_7"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="epp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div><div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 268px;" id="HM_Menu3"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item3_1">Standard Parallel Port (SPP)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 17px;" id="HM_Item3_2">Enhanced Parallel Port (EPP)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 34px;" id="HM_Item3_3">Extended Capabilities Parallel Port (ECP)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 51px;" id="HM_Item3_4">Parallel Port Debug Tool</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 68px;" id="HM_Item3_5">Parallel Port LCD Interface Example</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 85px;" id="HM_Item3_6">RS-232 Hardware &amp; Software Registers</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 102px;" id="HM_Item3_7">RS-232 Low Level Programming &amp; External Hardware</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 135px;" id="HM_Item3_8">Using Interrupts (PC)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 152px;" id="HM_Item3_9">Interfacing Example - Analog Sampling Via the RS-232 Port</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 185px;" id="HM_Item3_10">Interfacing Example - Connecting a LCD Module to the RS-232 Port</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 218px;" id="HM_Item3_11">Quick and Simple RS-232 Terminal</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 235px;" id="HM_Item3_12">RS-232 Protocol Analyser</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 252px;" id="HM_Item3_13"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="epp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div><div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 183px;" id="HM_Menu4"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item4_1">PortTalk - A Windows NT I/O Port Device Driver</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 33px;" id="HM_Item4_2">Universal Serial Bus Device Driver Development </div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 66px;" id="HM_Item4_3">Interrupts and Deferred Procedure Calls on Windows NT4/2000/XP </div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 99px;" id="HM_Item4_4">USB Driver for the Cypress USB Starter Kit</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 116px;" id="HM_Item4_5">Device Driver Fiddler (tools)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 133px;" id="HM_Item4_6">Windows NT Device Driver Installer (tools)</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 150px;" id="HM_Item4_7">Device Driver Remover Win9x (tools)</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 167px;" id="HM_Item4_8"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="epp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div><div style="position: absolute; visibility: hidden; left: -500px; top: 0px; width: 298px; border: 1px solid rgb(93, 108, 168); overflow: hidden; cursor: default; height: 383px;" id="HM_Menu5"><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 0px;" id="HM_Item5_1">CMOS Digital Image Sensors and Lenses</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 17px;" id="HM_Item5_2">Generate Ring Tones on your PIC16F87x Microcontroller</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 50px;" id="HM_Item5_3">Interfacing the AT Keyboard</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 67px;" id="HM_Item5_4">How does the Microchip ICD Work?</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 84px;" id="HM_Item5_5">Trust-No-Exe</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 101px;" id="HM_Item5_6">Command Line Process Viewer/Killer/Suspender for Windows NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 134px;" id="HM_Item5_7">BeyondExec - Spawn Processes on Remote Windows NT/2000/XP WorkStations</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 167px;" id="HM_Item5_8">Beyond Logic Shutdown Utility for NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 184px;" id="HM_Item5_9">Bmail - Command Line SMTP Mailer for Batch Jobs</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 217px;" id="HM_Item5_10">Delete/Copy by Owner utility for Windows NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 250px;" id="HM_Item5_11">Win32 Pipe Security Editor Windows NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 283px;" id="HM_Item5_12">Console Computer Information Utility for 2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 316px;" id="HM_Item5_13">SMART &amp; Simple for NT/2000/XP</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 333px;" id="HM_Item5_14">Kodak DC215 Support and FAQ</div><div style="position: absolute; visibility: inherit; cursor: pointer; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; border-bottom: 1px solid rgb(93, 108, 168); width: 293px; left: 0px; top: 350px;" id="HM_Item5_15">South Australian Electricity Generation</div><div style="position: absolute; visibility: inherit; background-color: BLUE; color: white; padding: 0px 5px 0px 0px; font: bold 10pt Verdana,Arial,sans-serif; width: 293px; left: 0px; top: 367px;" id="HM_Item5_16"><img style="position: relative; margin-top: 2px; margin-right: -5px; float: right;" src="epp_files/HM_More_white_right.gif" hspace="0" vspace="0" width="5">Links</div></div></body></html>

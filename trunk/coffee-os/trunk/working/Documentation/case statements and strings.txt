@@ -1,0 +1,10 @@
+FPC can use them,here is how:
+
+case string (stringname) of
+
+  'hello':begin ...end;
+  'bye':begin...end;
+
+end;{case}
+
+

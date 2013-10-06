@@ -1,0 +1,71 @@
+
+TBitmap object
+--------------
+
+   Example:
+
+   uses
+      graph, bitmaps, bmp;
+
+   var Bitmap:TBitmap;
+      GraphDriver, GraphMode: integer;
+
+   begin
+   GraphDriver := Detect;
+   InitGraph(GraphDriver, GraphMode, '');
+   Bitmap.Create;
+   if Bitmap.LoadFromFile('bitmap.bmp') then begin
+      PutImage((GetMaxX + 1 - Bitmap.getWidth) shr 1,
+               (GetMaxY + 1 - Bitmap.getHeight) shr 1,
+               Bitmap.getData^);
+      end ;
+   Bitmap.Destroy;
+   CloseGraph;
+   end .
+
+TBitmap Methods
+---------------
+
+Procedure SetWidth(value: word);
+
+   Sets the width of the image to value.
+
+Procedure SetHeight(value: word);
+
+   Sets the height of the image to value.
+
+procedure ScaleTo(AWidth, AHeight: word);
+
+   Scales the image.
+
+Function HasPalette:boolean;
+
+   Returns true if the bitmap contains a palette.
+
+Function GetSize:longint;
+
+   Returns the amount of memory allocated for the image.
+
+Function Clone:PBitmap;
+
+   Creates an exact copy of the bitmap.
+
+Function LoadFromFile(Filename: string):boolean;
+
+   LoadFromFile loads an image file, and returns true if succesfull.
+
+Function GetPalette:pointer;
+
+   Returns a pointer to the palette of the image, the palette consists of
+   an array of 256 longints.
+
+   The layout of a palet entry is:
+   bits 0 - 7: Value for Blue color component
+   bits 8 - 15: Value for Green color component
+   bits 16 - 24: Value for Red color component
+   bits 25 - 31: un-used
+
+Function GetData:pointer;
+
+   Returns a pointer to the image for use with PutImage.
+

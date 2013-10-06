@@ -1,0 +1,9 @@
+color           cyan/blue white/blue
+timeout         5
+
+title Coffee OS 0.64
+kernel /boot/coffee
+
+boot
+
+
