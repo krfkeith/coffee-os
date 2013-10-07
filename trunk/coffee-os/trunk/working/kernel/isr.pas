@@ -133,11 +133,11 @@ const
   );
 
   //weird: int80 makes 32...
-  ISRRoutines: array [0..31] of TISRHandler = (
+  ISRRoutines: array [0..32] of TISRHandler = (
     nil,nil,nil,nil,nil,nil,nil,nil,
     nil,nil,nil,nil,nil,nil,nil,nil,
     nil,nil,nil,nil,nil,nil,nil,nil,
-    nil,nil,nil,nil,nil,nil,nil,nil
+    nil,nil,nil,nil,nil,nil,nil,nil,nil
   );
 
 {$S-}
@@ -145,47 +145,10 @@ const
   {Note: 'Col' and 'Row' are zero relative, ie:- 0,0 for Top-Left.}
 
   PROCEDURE FastWrite(Col, Row, Attr : Byte; Str : String); ASSEMBLER;
-//DS is not needed as we have set the DS in our GDT already.  
+//broken
 ASM
-    MOV    ES,Vidmem   {ES = Colour Screen Segment}
-    MOV    BX,[49h]     {BL = CRT Mode, BH = ScreenWidth}
-    MOV    AL,Row       {AL = Row No}
-    MUL    BH           {AX = Row * ScreenWidth}
-    XOR    CH,CH        {CH = 0}
-    MOV    CL,Col       {CX = Column No}
-    ADD    AX,CX        {(Row*ScreenWidth)+Column}
-    ADD    AX,AX        {Multiply by 2 (2 Byte per Position)}
-    MOV    DI,AX        {DI = Screen Offset}
-    LDS    SI,Str       {DS:SI = Source String}
-    CLD                 {Move Forward through String}
-    LODSB               {Get Length Byte of String}
-    MOV    CL,AL        {CX = Input String Length}
-    JCXZ   @@Done       {Exit if Null String}
-    MOV    AH,Attr      {AH = Attribute}
-{Ignore Screen Retrace's}
-  @@FWrite:             {Output Ignoring Retrace's}
-    TEST   SI,1         {DS:SI an Even Offset?}
-    JZ     @@Words      {Yes - Skip (On Even Boundary)}
-    LODSB               {Get 1st Char}
-    STOSW               {Write 1st Char and Attrib}
-    DEC    CX           {Decrement Count}
-    JCXZ   @@Done       {Finished if only 1 Char in Str}
-  @@Words:              {DS:SI Now on Word Boundary}
-    SHR    CX,1         {CX = Char Pairs, Set CF if Odd Byte Left}
-    JZ     @@ChkOdd     {Skip if No Pairs to Store}
-  @@Loop:               {Loop Outputing 2 Chars per Loop}
-    MOV    BH,AH        {BH = Attrib}
-    LODSW               {Load 2 Chars}
-    XCHG   AH,BH        {AL = 1st Char, AH = Attrib, BH = 2nd Char}
-    STOSW               {Store 1st Char and Attrib}
-    MOV    AL,BH        {AL = 2nd Char}
-    STOSW               {Store 2nd Char and Attrib}
-    LOOP   @@Loop       {Repeat for Each Pair of Chars}
-  @@ChkOdd:             {Check for Final Char}
-    JNC    @@Done       {Skip if No Odd Char to Display}
-    LODSB               {Get Last Char}
-    STOSW               {Store Last Char and Attribute}
-  @@Done:               {Finished}
+ 
+ 
   END; {FastWrite}
 
 {$S+}
@@ -325,7 +288,7 @@ procedure BadTSS(var r:TRegisters);
 begin
         
         asm
-		  jmp $30:0 //try and recover somewhat
+		  jmp $33:0 //try and recover somewhat
 		end;
 		textcolor(red);
 	writestrln('TSS code implemented poorly.Halting OS.');
@@ -1129,7 +1092,7 @@ begin
     end;
 end;
 
-//export name 'name'
+
 procedure ISRHandler(var r: TRegisters);  [public, alias: 'ISRHandler'];
 //prt0.asm stub calls us.
 var
@@ -1137,19 +1100,11 @@ var
 
 begin
   Handler:=ISRRoutines[r.InterruptNumber];
- //debugging code
-  writestrln('INTERRUPT CALLED: ');
-  writelong(r.Interruptnumber);
-  asm
-    cli
-	hlt
-  end;
-  //end debug
-  
+
   asm
     cli //DONT STACK INTERRUPTS.
   end;
-
+  writestrln('INTERRUPTED.');
   if Assigned(Handler) then Handler(r) else begin;
       writestring('ISR not Implemented for interrupt: '); writelong(r.Interruptnumber); writestring(' , ');
       interrupthandler(r);

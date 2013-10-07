@@ -122,6 +122,7 @@ var
   nextStack:longint;
 begin
 	Inc(TimerTicks);   
+	writelongln(TimerTicks);
 //	if not IsTaskingActive then begin
 	//	writeportb($20,$20);
 //		exit;

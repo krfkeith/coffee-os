@@ -10,27 +10,22 @@ uses
   multiboot,
   console,
   uconsole,
-  gdt,
   idt,
   isr,
- // HWprinters,
+  HWprinters,
   irq,
   timer,
   keybrd,
-  //mouse,
+  mouse,
   rtc,
   pmm,
   vmm,
   commands,
   heap,
-  //syscalls,
-  cpuid;
-  //playmusic,
-  //HWcoms;
-{GDT HAS to get overridden post inital setup to enable PM EP for VESA. NO RELIABLE way to do this has been 
-found yet.You CANNOT write to a 16-bit DATA segment without jumping into a 16-bit CODE selector FIRST.
-IE: setting up for real mode, which doesnt work.
-}
+  syscalls,
+  cpuid,
+  playmusic,
+  HWcoms;
 
 var
 
@@ -39,7 +34,7 @@ var
 
  // ret:TTask;
   CurSorPosX,CurSorPosY:word;
-  ismultithread,isUserMode :boolean;
+  ismultithread,isUserMode,ispagingenabled :boolean;
   scrolldisabled:boolean;
   IsTaskingActive:boolean;
 
@@ -180,14 +175,8 @@ Here is how to setup VBE PM access and EP:
 	end;
 
 }
-  InstallGDT;
-  InstallIDT;
-  asm
-    cli
-	hlt
-  end;
-// VM86 will handle the DPMI calls
 
+ 
    //kernel start (1.20MB)
    writeline;
    textcolor(5);
@@ -283,41 +272,29 @@ Here is how to setup VBE PM access and EP:
       writedword((((mbinfo^.Uppermemory div 1024)div 1024)div 1024)); 
       writestrln(' GB');
       textcolor(8);
-   
-   writestrln('Press any key: Loads of info. ');
-   ch:=char(Readkey); //remember returns a BYTE
-   clearscreen;
+
+
    
   
    if ((mbinfo^.flags and 6)=1) then begin //we have a valid mem map from GRUB!
       FindUsableRAM(mbinfo);
    end;
   
- // InstallISR;
+ 
   BootTicks:=0; // helps with UpTime command.
   InstallTimer;
+  InstallIDT;
+ // InstallRTC;
+  InstallISR;
+  InstallIRQ; //tell all HW to accept interrupts. 
+  	
+  //InstallPMM(StartESP); 
 
-  InstallKeyb; //set it up first
-//  InstallRTC;
- 
-  //InstallIRQ; tell all HW to accept interrupts. 
+  //InstallkHeap; //Setup Heap(and Maps it in)
+  //InstalluHeap; //--Userland
 
-//  InstallPMM(StartESP); 
-
- // InstallkHeap; //Setup Heap(and Maps it in)
-//  InstalluHeap; --Userland
-
-{  InstallVMM; //turn on paging with our setup.(debugging this..3xF on init..)
-//paging structure is SANE. THis is here due to 'iret' value being off when enabled.
-
-   asm
-    mov eax,cr0
-    or  eax,$80000000
-    mov cr0,eax
-  end;
-}
-//	EnablePaging; //this is external in prt0 at the moment...(works)
-//    IsPagingEnabled:=true; //mov IsPagingEnabled,1
+   // EnablePaging; //this is external in prt0 at the moment...(works)
+   // IsPagingEnabled:=true; //mov IsPagingEnabled,1
 
 
 //ideally we want PAE:
@@ -338,8 +315,6 @@ Here is how to setup VBE PM access and EP:
 //init_syscalls; //useless withuot ring3, which requires VMM WORKING correctly.
 // InitTasking;
 
-writeline;
-writeline;
 
 //switch_to_user_mode; 
 //drops to kernel mode on int 80 or timer(HW triggered) event.
@@ -351,13 +326,7 @@ TextColor(Yellow);
   writeline;
   TextColor(7);
   writestring('Coffee > ');
-
- //interrupt table has some issue, dont enable interrupts yet, we will triple fault.
-
-{  asm
-     sti
-   end;}
-
+ 
 // Initialise the initial ramdisk, and set it as the filesystem root.
 //  fs_root := initialise_initrd(initrd_location); --The FAMOUS 'MOUNT' command...
 

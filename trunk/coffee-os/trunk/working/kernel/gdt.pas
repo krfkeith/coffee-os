@@ -90,7 +90,7 @@ var
 
 begin
   WriteString('Installing GDT...'#9#9);
-  FillChar(GDTList,SizeOf(GDTList),#0); 
+ { FillChar(GDTList,SizeOf(GDTList),#0); 
   with GDTPtr do begin
     Limit := SizeOf(GDTList) - 1;
     Base := Longword(@GDTList);
@@ -111,9 +111,9 @@ begin
  
   //initprio:=200;
 
- {  asm
+   asm
 	  mov [esp0],esp
-   end;}
+   end;
    TssPtr.ss0:= $10;  // Set the kernel stack segment. 
   // TssPtr.esp0 := esp0; -- Set the kernel stack pointer. We get this at a syscall.
    TssPtr.eflags:=$102;
@@ -160,8 +160,8 @@ begin
   //GDT.SetGate(18, 0, $FFFFFFFF, $9A, $40); // PNP BIOS TS1
   //GDT.SetGate(19, 0, $00000000, $9A, $00); // PNP BIOS TS2
   
-  GDTFlush(GDTPtr,sizeof(GDTPtr));
- 
+ // GDTFlush(GDTPtr,sizeof(GDTPtr));
+ }
    textcolor(green);
 	WriteStrLn(' [ OK ]');
 	textcolor(8);

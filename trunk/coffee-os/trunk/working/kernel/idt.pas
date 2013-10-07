@@ -25,8 +25,8 @@ type
 
 
 var
-  IDTList: array [0..254] of TIDTEntry;
-  IDTPtr: TIDTPtr; export name 'IDTPtr';
+  IDTList: array [0..48 {254}] of TIDTEntry;
+  IDTPtr: TIDTPtr; //export name 'IDTPtr';
 
 procedure SetIDTGate(Num: word; Base: LongWord; Sel: Word; Flg: Byte);
 procedure InstallIDT;
@@ -175,14 +175,14 @@ begin
   SetIDTGate(47,PtrUInt(@IRQ15),$08,$8E);
 //GDT for Ring3 for Syscalls($18) --will GPF in user mode if this is for Ring0.
 // $77 for interrupt, $2f for task gates
-  SetIDTGate(80,PtrUInt(@ISR80),$18,$2F); //8e
+  SetIDTGate(80,PtrUInt(@ISR80),$18,$2F); 
 
   //Set one up HERE if you need something extra implemented..
-  asm
+{  asm
    mov eax, [IDTPtr]  // Get the pointer to the IDT, passed as a parameter. 
    lidt [eax]        // Load the IDT pointer.
   end;
-  
+}  
   textcolor(Green);
   WriteStrLn('[ OK ]');
  textcolor(8);

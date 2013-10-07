@@ -229,9 +229,9 @@ This is a big step torwards a PASCAL OS.
 
   InstallIRQHandler(0,@TimerHandler);
   InstallIRQHandler(1,@KeyBoardHandler);
-  //InstallIRQHandler(3,@Coms);
-//  InstallIRQHandler(4,@Coms);
-  //InstallIRQHandler(5,@Printers);
+  InstallIRQHandler(3,@Coms);
+  InstallIRQHandler(4,@Coms);
+  InstallIRQHandler(5,@Printers);
 //  InstallIRQHandler(6,@floppyHandler); (nearly complete)
  // InstallIRQHandler(7,@DummyHandler);
 
@@ -260,12 +260,11 @@ procedure IRQHandler(var r: TRegisters); cdecl; [public, alias: 'IRQHandler'];
 var
   Handler: TIRQHandler;
 begin
-  Handler:=IRQRoutines[r.InterruptNumber-32]; //take 32 from the actual int number to get the associated routine
-  writestring('IRQ called.');
   asm
-    cli
-	hlt
+     cli
   end;
+  Handler:=IRQRoutines[r.InterruptNumber-32]; //take 32 from the actual int number to get the associated routine
+  writestrln('IRQ fired.');
   if Assigned(Handler) then Handler(r) else begin
       writestring('IRQ not Implemented for interrupt: '); writelong(r.Interruptnumber); writestring(' , ');
       interrupthandler(r);

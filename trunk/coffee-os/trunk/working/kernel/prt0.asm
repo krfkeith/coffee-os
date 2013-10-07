@@ -39,8 +39,7 @@ global start
 extern mbinfo
 extern MagicNumbers
 extern PASCALMAIN
-extern gdtr
-extern IDTPtr	
+	
 global FlushGDT
 jmp start
    
@@ -48,47 +47,189 @@ start:
 		cli ; interrupts OFF until further notice!
        		push $2
 		popf
-		
+	
+    
 	    	mov  [MagicNumbers],eax                ; Multiboot magic number
         	mov  [mbinfo],ebx               ; Multiboot info
-		;ISR has to be set, pointing to real mode IVT...
+		
 		call disable_nmi
 	
-		mov eax,RM_STACK+RM_STACKSIZE ;create VBIOS stack for PM EP
 		mov edx, KERNEL_STACK+KERNEL_STACKSIZE  ;Create kernel stack 
 		mov ecx,USER_STACK+USER_STACKSIZE ;Create User-mode stack
 		call enable_nmi
        
+		call		   InstallGDT
+		;call FlushTSS
+		
+		
         call PASCALMAIN                        ; Call kernel entrypoint
 	
         jmp $ ; go nowhere
+
+
+IDTPtr:
+                                      ; IDT table pointer for 32bit access
+    dw 0x0000                              ; table limit (NULL--prevent 16bit IVT from being called)
+    dd 0x00000000                          ; table base address(YES, overrides RM IVT)
+
+
+gdtr:   
+   dw gdt_end - gdt - 1   ; GDT limit
+   dd gdt                  ; (GDT base gets set above)
+
+; null descriptor
+gdt:   ;4 words in size
+   dw 0         ; limit 15:0
+   dw 0         ; base 15:0
+
+   db 0         ; base 23:16
+   db 0         ; type
+
+   db 0         ; limit 19:16, flags
+   db 0         ; base 31:24
+
+
+; code segment descriptor
+SYS_CODE_SEL   equ   $-gdt
+gdt2:   
+
+ ;  dd 0x1200000           ;12MB (WAY more than enough)    
+ ;  dd 0xFF000000         ; base 
+ 
+   dw 0
+   dw 0
+   db 0
+   db 0x9A         ; present, ring 0, code, non-conforming, readable
+   db 0xCF                 ; page-granular, 32-bit
+   db 0
+
+
+; data segment descriptor
+SYS_DATA_SEL   equ   $-gdt
+gdt3:   
+ ;  dd 0x200000           ;2MB    (Im overly GENEROUS)
+ ;  dd 0xFDE00000         ; base
+
+   dw 0
+   dw 0
+   db 0   ;xF7
+   db 0x92         ; present, ring 0, code, non-conforming, readable
+   db 0xCF                 ; page-granular, 32-bit
+   db 0
+
+USER_CODE_SEL   equ   $-gdt
+gdt4:   
+   ;dd 0xC1800000               ; limit 3GB(we still need room for PCI address space and VRAM space)
+   ;dd 0xFDC00000         ; base
+   
+   dw 0
+   dw 0
+   db 0  ;xF7
+   db 0xFA         ; present, ring 0, code, non-conforming, readable
+   db 0xCF                 ; page-granular, 32-bit
+   db 0
+
+
+; data segment descriptor
+USER_DATA_SEL   equ   $-gdt
+gdt5:   
+  ; dd 0x20000000               ; limit 512MB
+  ; dd 0x3C400000         ; base @ [3.5GB+32MB] 
+   dw 0
+   dw 0
+   db 0  ;xF1
+   db 0xF2         ; present, ring 3, data, expand-up, writable
+   db 0xCF                 ; page-granular(4K), 32-bit
+   db 0
+   
+
+TSS_SEL		equ	$-gdt
+gdt6:
+	dw 0x102
+	dw 0
+	db 0
+	db 0x89			; Ring 0 available 32-bit TSS
+	db 0
+	db 0
+		   
+gdt_end:
+
+
+; Even if you don't use TSS-based task-switching, you need one
+; TSS to hold the user stack pointer.
+
+tss:
+	dw 0, 0			; back link
+
+	dd 0			; ESP0
+	dw SYS_DATA_SEL, 0		; SS0, reserved
+
+	dd 0			; ESP1
+	dw 0, 0			; SS1, reserved
+
+	dd 0			; ESP2
+	dw 0, 0			; SS2, reserved
+
+	dd 0			; CR3
+	dd 0, 0			; EIP, EFLAGS
+	dd 0, 0, 0, 0		; EAX, ECX, EDX, EBX
+	dd 0, 0, 0, 0		; ESP, EBP, ESI, EDI
+	dw 0, 0			; ES, reserved
+	dw 0, 0			; CS, reserved
+	dw 0, 0			; SS, reserved
+	dw 0, 0			; DS, reserved
+	dw 0, 0			; FS, reserved
+	dw 0, 0			; GS, reserved
+	dw 0, 0			; LDT, reserved
+	dw 0, 0			; debug, IO perm. bitmap
+tss_end:	
+	
+tssPtr:
+	dw tss_end - tss - 1	; IDT limit
+	dd tss			; linear, physical address of IDT
 		
-FlushGDT:
-   MOV   EAX, [esp + 4]
-   MOV   [gdtr + 2], EAX
-   MOV   AX, [ESP + 8]
-   MOV   [gdtr], AX
-   LGDT  [gdtr]
 
-     ; Reload CS register containing code selector:
-;   JMP   0x08:.reload_CS ; 0x08 points at the new code selector
-;.reload_CS:
-   ; Reload data segment registers:
-;   MOV   AX, 0x10 ; 0x10 points at the new data selector
-;   MOV   DS, AX
-;   MOV   ES, AX
-;   MOV   FS, AX
-;   MOV   GS, AX
-;   MOV   SS, AX
-   RET	
+InstallGDT:
 
-GLOBAL FlushTSS   ; Allows our C code to call tss_flush().
+    xor ebx,ebx
+	mov bx,ds                       ; BX=segment
+	
+	shl ebx,4                       ; BX="linear" address of segment base
+	mov eax,ebx
+	
+    mov [gdt2 + 2],ax               ; set base address of 32-bit segments
+    mov [gdt3 + 2],ax
+    mov [gdt4 + 2],ax               ; set base address of 16-bit segments
+    mov [gdt5 + 2],ax
+    mov [gdt6 + 2],ax               ; set base address of 16-bit segments
+   
+	
+	shr eax,16
+	
+    mov [gdt2 + 4],al
+    mov [gdt3 + 4],al
+    mov [gdt4 + 4],al
+    mov [gdt5 + 4],al
+    mov [gdt6 + 4],al               ; set base address of 16-bit segments
+   
+
+    mov [gdt2 + 7],ah
+    mov [gdt3 + 7],ah
+    mov [gdt4 + 7],ah
+    mov [gdt5 + 7],ah
+    mov [gdt6 + 7],ah               ; set base address of 16-bit segments
+  
+   lea eax,[gdt + ebx]             ; EAX=PHYSICAL address of gdt
+   mov [gdtr + 2],eax
+
+   lgdt[gdtr]
+   ret	                 ; Because we are called, we flush later on.
+
+
+GLOBAL FlushTSS   ; Allows our  code to call tss_flush().
 FlushTSS:
-   mov ax, 0x2B      ; Load the index of our TSS structure - The index is
-                     ; 0x28, as it is the 5th selector and each is 8 bytes
-                     ; long, but we set the bottom two bits (making 0x2B)
-                     ; so that it has an RPL of 3, not zero.
-   ltr ax            ; Load 0x2B into the task state register.
+   mov ax, 0x2B   
+   ltr ax            
    ret
 
 ; macro for ISRs without error code
@@ -165,7 +306,7 @@ ISRWithoutErrorCode 28 ; DOS (Delay) routine.Reprogrammed to ours.
 ISRWithoutErrorCode 29 ; Fast Console Write 
 ISRWithoutErrorCode 30 ; Reserved
 ISRWithoutErrorCode 31 ; DPMI memory routines
-
+ISRWithoutErrorCode 80
 IRQWithoutErrorCode 0 ; Timer (110ms intervals, 18.2 per second)
 IRQWithoutErrorCode 1 ; Keyboard
 IRQWithoutErrorCode 2 ; slave 8259 or EGA/VGA vertical retrace
@@ -194,9 +335,6 @@ IRQWithoutErrorCode 15 ;  second fixed disk controller(IDE)
 
 
 
-ISRWithoutErrorCode 80 ;(Syscalls) 80h=128
-
-
 extern ISRHandler
 extern IRQHandler
 
@@ -218,7 +356,7 @@ ISRCommonStub:
    mov gs, ax
   
    cli
-;(hlt)might explain some things.
+
    
    call ISRHandler
    
@@ -484,6 +622,120 @@ section .bss ; 'better save space' for these...this is uninitialized data area.
 ; This space is ZEROED.
 _bss:
 
+
+struc multiboot_info
+	.flags			resd	1
+	.memoryLo		resd	1
+	.memoryHi		resd	1
+	.bootDevice		resd	1
+	.cmdLine		resd	1
+	.mods_count		resd	1
+	.mods_addr		resd	1
+	.syms0			resd	1
+	.syms1			resd	1
+	.syms2			resd	1
+	.mmap_length		resd	1
+	.mmap_addr		resd	1
+	.drives_length		resd	1
+	.drives_addr		resd	1
+	.config_table		resd	1
+	.bootloader_name	resd	1
+	.apm_table		resd	1
+	.vbe_info		resd	1
+	.vbe_mode_info		resd	1
+	.vbe_mode		resw	1
+	.vbe_interface_seg	resw	1
+	.vbe_interface_off	resw	1
+	.vbe_interface_len	resw	1
+endstruc
+
+struc vbe_info
+	.VBESignature       resd 1 
+	.VBEVersion         resd 1      
+	.OEMStringPtr       resd 1 
+	.Capabilities       resw 1
+	.VideoModePtr       resd 1   
+	.TotalMemory        resw 1
+	.OemSoftwareRev     resw 1       
+	.OemVendorNamePtr   resd 1
+	.OemProductNamePtr  resd 1
+	.OemProductRevPtr   resd 1
+	.Paddington  resb 477 
+endstruc
+
+struc vbe_mode_info
+    .ModeAttributes  resw 1
+    .WindowAFlags    resb 1
+    .WindowBFlags    resb 1
+    .Granularity     resw 1
+    .WindowSize      resw 1
+    .WindowASeg      resw 1
+    .WindowBSeg      resw 1
+    .BankSwitch      resd 1
+    .BytesPerLine    resw 1
+    .XRes		resw 1
+    .YRes           resw 1
+    .CharWidth       resb 1
+    .CharHeight      resb 1
+    .NumBitplanes    resb 1
+    .BitsPerPixel    resb 1
+    .NumberOfBanks   resb 1
+    .MemoryModel     resb 1
+    .BankSize        resb 1
+    .NumOfImagePages resb 1
+    .Reserved        resb 1
+    .RedMaskSize     resb 1   
+    .RedFieldPosition  resb 1
+    .GreenMaskSize     resb 1
+    .GreenFieldPosition resb 1
+    .BlueMaskSize       resb 1
+    .BlueFieldPosition  resb 1
+    .RsvdMaskSize       resb 1
+    .RsvdFieldPosition  resb 1
+    .DirectColourMode   resb 1
+    .PhysBasePtr        resd 1
+    .OffScreenMemOffset resd 1
+    .OffScreenMemSize  resw 1
+    .paddington2 resb 463 
+endstruc
+
+struc PMInfoBlock
+    .Signature resd 1
+	.EntryPoint resw 1
+	.PMInitialize resw 1
+	.BIOSDataSel  resw 1
+	.A000Sel resd 1
+	.B000Sel resd 1
+	.B800Sel resd 1
+	.CodeSegSel resd 1
+	.InProtectMode resb 1
+	.CheckSum resb 1
+endstruc
+
+struc	MemoryMapEntry
+	.baseAddress			resq	1
+	.length				resq	1
+	.type				resd	1
+	.acpi_null			resd	1
+endstruc
+
+struc regs16_t
+	    .di resw 1
+	    .si resw 1
+	    .bp resw 1
+	    .sp resw 1
+	    .bx resw 1
+	    .dx resw 1
+	    .cx resw 1
+	    .ax resw 1
+	    .gs resw 1
+	    .fs resw 1
+	    .es resw 1
+	    .ds resw 1
+	    .ef resw 1
+endstruc
+
+
 ;
 ; Kernel stack location
 ;
@@ -497,8 +749,5 @@ KERNEL_STACK:
 
 USER_STACK:
   resb USER_STACKSIZE
-
-RM_STACK:
-  resb	RM_STACKSIZE
 				
 _ebss:
