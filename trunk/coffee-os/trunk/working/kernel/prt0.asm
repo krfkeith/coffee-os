@@ -58,15 +58,29 @@ start:
 		mov ecx,USER_STACK+USER_STACKSIZE ;Create User-mode stack
 		call enable_nmi
        
-		call		   InstallGDT
-		;call FlushTSS
-		
+		call   InstallGDT
+		call FlushTSS
+		;mov ax, 10h             ; Save data segment identifyer
+    		;mov ds, ax              ; Move a valid data segment into the data segment register
+        	;mov ss, ax              ; Move a valid data segment into the stack segment register
+        	;mov esp, 090000h        ; Move the stack pointer to 090000h
+
 		
         call PASCALMAIN                        ; Call kernel entrypoint
 	
         jmp $ ; go nowhere
 
 
+[bits 16]
+ 
+idt_real:
+	dw 0x3ff		; 256 entries, 4b each = 1K
+	dd 0			; Real Mode IVT @ 0x0000
+ 
+savcr0:
+	dd 0			; Storage location for pmode CR0.
+ 
+[bits 32]
 IDTPtr:
                                       ; IDT table pointer for 32bit access
     dw 0x0000                              ; table limit (NULL--prevent 16bit IVT from being called)
@@ -74,8 +88,8 @@ IDTPtr:
 
 
 gdtr:   
-   dw gdt_end - gdt - 1   ; GDT limit
-   dd gdt                  ; (GDT base gets set above)
+   Limit dw gdt_end - gdt - 1   ; GDT limit
+   Base dd gdt                  ; (GDT base gets set above)
 
 ; null descriptor
 gdt:   ;4 words in size
@@ -143,7 +157,7 @@ gdt5:
    db 0
    
 
-TSS_SEL		equ	$-gdt
+TSS_SEL		equ	$-gdt ;28
 gdt6:
 	dw 0x102
 	dw 0
@@ -151,7 +165,30 @@ gdt6:
 	db 0x89			; Ring 0 available 32-bit TSS
 	db 0
 	db 0
-		   
+		
+; code segment descriptor
+RM_CODE_SEL   equ   $-gdt
+gdt7:   
+
+   dw 0
+   dw 0
+   db 0
+   db 0x9A         ; present, ring 0, code, non-conforming, readable
+   db 0                 ; page-granular, 32-bit
+   db 0
+
+
+; data segment descriptor
+RM_DATA_SEL   equ   $-gdt
+gdt8:   
+
+   dw 0
+   dw 0
+   db 0   
+   db 0x92         ; present, ring 0, code, non-conforming, readable
+   db 0                 ; page-granular, 32-bit
+   db 0
+   
 gdt_end:
 
 
@@ -188,42 +225,20 @@ tssPtr:
 	dw tss_end - tss - 1	; IDT limit
 	dd tss			; linear, physical address of IDT
 		
-
+global InstallGDT     ; Allows the  code to link to this
+ 
 InstallGDT:
 
-    xor ebx,ebx
-	mov bx,ds                       ; BX=segment
-	
-	shl ebx,4                       ; BX="linear" address of segment base
-	mov eax,ebx
-	
-    mov [gdt2 + 2],ax               ; set base address of 32-bit segments
-    mov [gdt3 + 2],ax
-    mov [gdt4 + 2],ax               ; set base address of 16-bit segments
-    mov [gdt5 + 2],ax
-    mov [gdt6 + 2],ax               ; set base address of 16-bit segments
-   
-	
-	shr eax,16
-	
-    mov [gdt2 + 4],al
-    mov [gdt3 + 4],al
-    mov [gdt4 + 4],al
-    mov [gdt5 + 4],al
-    mov [gdt6 + 4],al               ; set base address of 16-bit segments
-   
-
-    mov [gdt2 + 7],ah
-    mov [gdt3 + 7],ah
-    mov [gdt4 + 7],ah
-    mov [gdt5 + 7],ah
-    mov [gdt6 + 7],ah               ; set base address of 16-bit segments
-  
-   lea eax,[gdt + ebx]             ; EAX=PHYSICAL address of gdt
-   mov [gdtr + 2],eax
-
-   lgdt[gdtr]
-   ret	                 ; Because we are called, we flush later on.
+  lgdt [gdtr]        ; Load the GDT with our '_gp' which is a special pointer
+    mov ax, 0x10      ; 0x10 is the offset in the GDT to our data segment
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    jmp 0x08:flush2   ; 0x08 is the offset to our code segment: Far jump!
+flush2:
+    ret               ; Returns back to the C code!
 
 
 GLOBAL FlushTSS   ; Allows our  code to call tss_flush().
@@ -231,6 +246,38 @@ FlushTSS:
    mov ax, 0x2B   
    ltr ax            
    ret
+
+global Entry16
+Entry16:
+ 
+	cli			; Disable interrupts.
+ 
+	; Need 16-bit Protected Mode GDT entries!
+	mov eax, RM_DATA_SEL	; 16-bit Protected Mode data selector.
+	mov ds, eax
+	mov es, eax
+	mov fs, eax
+	mov gs, eax
+ 
+	; Disable paging (we need everything to be 1:1 mapped).
+	mov eax, cr0
+	mov [savcr0], eax	; save pmode CR0
+	and eax, 0x7FFFFFFe	; Disable paging bit & enable 16-bit pmode.
+	mov cr0, eax
+ 
+	jmp 0:GoRMode		; Perform Far jump to set CS.
+ 
+GoRMode:
+	mov sp, 0x8000		; pick a stack pointer.
+	mov ax, 0		; Reset segment registers to 0.
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	lidt [idt_real]
+        
+	hlt		
+
 
 ; macro for ISRs without error code
 %macro ISRWithoutErrorCode 1
@@ -362,7 +409,7 @@ ISRCommonStub:
    
    pop ax        ; reload the original data segment descriptor
    ; TSS not saved upon return to ring3, so do it.
-; this will be required from here on out
+
   lea eax,[esp + 76]	; 19 dwords == 76 bytes
   mov [ESP],eax      ; Ring 0 ESP value after IRET
   
@@ -398,7 +445,7 @@ IRQCommonStub:
 
    pop ax        ; reload the original data segment descriptor
    ; TSS not saved upon return to ring3, so do it.
-; this will be required from here on out
+
   lea eax,[esp + 76]	; 19 dwords == 76 bytes
   mov [ESP],eax      ; Ring 0 ESP value after IRET
   
@@ -411,34 +458,14 @@ IRQCommonStub:
    add esp, 8     ; Cleans up the pushed error code and pushed ISR number
    sti
    iret           ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
-
-; Enables A20 line
-global enable_a20
-ENABLE_A20: 
-	MOV             AL, 0D1H
-    OUT             064H, AL
- 
-	MOV             AL, 0DFH
-    OUT             060H, AL
-	Ret
-	
-; Disables A20 line
-global disable_a20
-DISABLE_A20: 
-	MOV             AL, 0D1H
-    OUT             064H, AL
- 
-	MOV             AL, 0DDH
-    OUT             060H, AL
-	ret
 	
 ; Enables non-maskable interrupts
 global enable_nmi
 enable_nmi:
         MOV             AL, 0DH
         OUT             070H, AL
-		NOP
-		RET
+	NOP
+	RET
 
 ; Disables non-maskable interrupts
 global disable_nmi
@@ -447,7 +474,7 @@ disable_nmi:
         MOV             AL, 0DH
         OUT             070H, AL
         NOP
-		RET
+	RET
 
 
 
@@ -553,12 +580,6 @@ loop3:
 
 
 	;------------------------------------------
-	;	install directory table
-	;------------------------------------------
-
-
-    
-	;------------------------------------------
 	;	enable paging
 	;------------------------------------------
 	; dont override the registers were using...
@@ -570,12 +591,6 @@ loop3:
 
     popf                  ; Pop EFLAGS back.
     pop ebx               ; Get the original value of EBX back.
-	
-	
-	;cli
-	;hlt
-	
-	;sti
 	popa
 	ret 
 	

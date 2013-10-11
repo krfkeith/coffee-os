@@ -90,7 +90,7 @@ var
 
 begin
   WriteString('Installing GDT...'#9#9);
- { FillChar(GDTList,SizeOf(GDTList),#0); 
+  FillChar(GDTList,SizeOf(GDTList),#0); 
   with GDTPtr do begin
     Limit := SizeOf(GDTList) - 1;
     Base := Longword(@GDTList);
@@ -104,7 +104,7 @@ begin
   GDT.SetGate(3, 0, $FFFFFFFF, $FA, $CF); // User space code
   GDT.SetGate(4, 0, $FFFFFFFF, $F2, $CF); // User space data
   
-   address:=longword(@tssPtr);
+ {  address:=longword(@tssPtr);
    size:=(sizeof(tssPtr)-1); 
 
    GDT.SetGate(5, address,size, $89, 0); 
@@ -136,7 +136,7 @@ begin
 
   // TSSFlush;
    GDT.SetGate(6, 0, 0, 0, 0); // TSS 3XF section
-
+}
  //need to rewrite these FIVE if setting up PM EP.
   //More hassle than worth right now for 16-bit PM segments.
  //  GDT.SetGate(7, $0b800, $3FFF, $92, $CF);  
@@ -161,7 +161,7 @@ begin
   //GDT.SetGate(19, 0, $00000000, $9A, $00); // PNP BIOS TS2
   
  // GDTFlush(GDTPtr,sizeof(GDTPtr));
- }
+ 
    textcolor(green);
 	WriteStrLn(' [ OK ]');
 	textcolor(8);

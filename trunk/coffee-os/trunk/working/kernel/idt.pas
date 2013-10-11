@@ -114,7 +114,7 @@ begin
   Tabulate;
   
   with IDTPtr do begin
-    Limit:=SizeOf(IDTList)-1; //(Entry length*256)-1
+    Limit:=SizeOf(IDTList)-1; 
     Base:=Longword(@IDTList);
   end;
 //8E =interrupt gate
@@ -177,12 +177,12 @@ begin
 // $77 for interrupt, $2f for task gates
   SetIDTGate(80,PtrUInt(@ISR80),$18,$2F); 
 
-  //Set one up HERE if you need something extra implemented..
-{  asm
+
+  asm
    mov eax, [IDTPtr]  // Get the pointer to the IDT, passed as a parameter. 
    lidt [eax]        // Load the IDT pointer.
   end;
-}  
+  
   textcolor(Green);
   WriteStrLn('[ OK ]');
  textcolor(8);

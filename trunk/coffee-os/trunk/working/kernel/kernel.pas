@@ -53,7 +53,7 @@ var
       sz:longint;
       buf:array [1..256] of char;
 	 
-
+procedure Entry16; external name 'Entry16';
 procedure switch_to_user_mode; external name 'switch_to_user_mode';
 procedure EnablePaging; external name 'EnablePaging';
 Procedure test_user_function; [public, alias: 'test_user_function'];
@@ -89,7 +89,6 @@ begin
       //Get stack pointers (64KB EACH)
       mov StartESP,edx
       mov UserESP,ecx
-      mov VBIOSESP,eax
 	  
    end;
 
@@ -273,19 +272,22 @@ Here is how to setup VBE PM access and EP:
       writestrln(' GB');
       textcolor(8);
 
-
-   
-  
    if ((mbinfo^.flags and 6)=1) then begin //we have a valid mem map from GRUB!
-      FindUsableRAM(mbinfo);
+      FindUsableRAM(mbinfo); //should compare this with used ram(mapped after paging) in kemu(kvm)
    end;
-  
- 
+{  asm
+   call Entry16
+
+ end;}
+
   BootTicks:=0; // helps with UpTime command.
-  InstallTimer;
+  //GDT and TSS moved to assembler.
+
   InstallIDT;
- // InstallRTC;
   InstallISR;
+  InstallTimer;
+ // InstallRTC;
+
   InstallIRQ; //tell all HW to accept interrupts. 
   	
   //InstallPMM(StartESP); 
