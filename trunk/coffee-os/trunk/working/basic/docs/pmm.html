@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>pmm</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit pmm</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td>uses</td><td>Classes, Interfaces, Objects and Records</td><td><a class="section"  href="#%40FuncsProcs">Functions and Procedures</a></td><td>Types</td><td><a class="section"  href="#%40Constants">Constants</a></td><td><a class="section"  href="#%40Variables">Variables</a></td></tr></table>
+<a name="%40Description"></a><h2 class="description">Description</h2>
+&nbsp;<a name="%40Uses"></a><h2 class="overview">Overview</h2>
+<a name="%40FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="pmm.html#InstallPMM">InstallPMM</a></b>(const Start: LongWord);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="pmm.html#FindUsableRAM">FindUsableRAM</a></b>(MB: <a   href="multiboot.html#Pmultibootinfo">PMultiBootInfo</a> );</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="pmm.html#AllocPage">AllocPage</a></b>: LongWord;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="pmm.html#FreePage">FreePage</a></b>(const p: LongWord);</code></td>
+</tr>
+</table>
+<a name="%40Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="pmm.html#PMMStackAddr">PMMStackAddr</a></b> = $FF000000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="pmm.html#PageSize">PageSize</a></b> = $4000;</code></td>
+</tr>
+</table>
+<a name="%40Variables"></a><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="pmm.html#StartESP">StartESP</a></b>: LongWord; export name 'StartESP';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="pmm.html#UserESP">UserESP</a></b>:Longword; export name 'UserESP';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="pmm.html#VBIOSESP">VBIOSESP</a></b>:Longword; export name 'VBIOSESP';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="pmm.html#IsPagingActive">IsPagingActive</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="pmm.html#PMMStackLocation">PMMStackLocation</a></b>: LongWord = <a   href="pmm.html#PMMStackAddr">PMMStackAddr</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="pmm.html#PMMStackMax">PMMStackMax</a></b>: LongWord = <a   href="pmm.html#PMMStackAddr">PMMStackAddr</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="pmm.html#PMMLocation">PMMLocation</a></b>: LongWord;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="InstallPMM"></a><code>procedure <b>InstallPMM</b>(const Start: LongWord);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="FindUsableRAM"></a><code>procedure <b>FindUsableRAM</b>(MB: <a   href="multiboot.html#Pmultibootinfo">PMultiBootInfo</a> );</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AllocPage"></a><code>function <b>AllocPage</b>: LongWord;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="FreePage"></a><code>procedure <b>FreePage</b>(const p: LongWord);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PMMStackAddr"></a><code><b>PMMStackAddr</b> = $FF000000;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PageSize"></a><code><b>PageSize</b> = $4000;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+above the page tables.</p>
+</td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="StartESP"></a><code><b>StartESP</b>: LongWord; export name 'StartESP';</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+4K pages</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="UserESP"></a><code><b>UserESP</b>:Longword; export name 'UserESP';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="VBIOSESP"></a><code><b>VBIOSESP</b>:Longword; export name 'VBIOSESP';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsPagingActive"></a><code><b>IsPagingActive</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PMMStackLocation"></a><code><b>PMMStackLocation</b>: LongWord = <a   href="pmm.html#PMMStackAddr">PMMStackAddr</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PMMStackMax"></a><code><b>PMMStackMax</b>: LongWord = <a   href="pmm.html#PMMStackAddr">PMMStackAddr</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PMMLocation"></a><code><b>PMMLocation</b>: LongWord;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2013-10-12 18:10:06</em>
+</span>
+</body></html>

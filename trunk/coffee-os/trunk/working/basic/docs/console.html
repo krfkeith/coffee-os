@@ -1,0 +1,349 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>console</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit console</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td>uses</td><td>Classes, Interfaces, Objects and Records</td><td><a class="section"  href="#%40FuncsProcs">Functions and Procedures</a></td><td>Types</td><td>Constants</td><td><a class="section"  href="#%40Variables">Variables</a></td></tr></table>
+<a name="%40Description"></a><h2 class="description">Description</h2>
+<p>
+///////////////////////////////////////////////////////// // // // Freepascal barebone OS // // console.pas // // // ///////////////////////////////////////////////////////// // // By: De Deyn Kim &lt;kimdedeyn@skynet.be&gt; // License: Public domain //</p>
+<a name="%40Uses"></a><h2 class="overview">Overview</h2>
+<a name="%40FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="console.html#kclearscreen">kclearscreen</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="console.html#Scroll">Scroll</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="console.html#GetTextColor">GetTextColor</a></b>: Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="console.html#GetTextBackground">GetTextBackground</a></b>: Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="console.html#textcolor">textcolor</a></b>(color:word);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <b><a   href="console.html#TextBackground">TextBackground</a></b>(Color: word);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="console.html#WritedwordLn">WritedwordLn</a></b>(l: DWord);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="console.html#update_cursor">update_cursor</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="console.html#kwritechr">kwritechr</a></b>(c: Char);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="console.html#kwritestr">kwritestr</a></b>(s: PChar);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="console.html#kwriteint">kwriteint</a></b>(i: Integer);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="console.html#WriteIntLn">WriteIntLn</a></b>(i: Integer);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="console.html#WriteLong">WriteLong</a></b>(l: LongWord);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="console.html#WriteLongLn">WriteLongLn</a></b>(l: LongWord);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="console.html#kwritedword">kwritedword</a></b>(i: DWORD);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="console.html#WriteStrLn">WriteStrLn</a></b>( S: PChar);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="console.html#WritePCharLn">WritePCharLn</a></b>(P: PChar);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="console.html#WritePChar">WritePChar</a></b>(P: PChar);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="console.html#GetXY">GetXY</a></b>:Word;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="console.html#GetX">GetX</a></b>: Word;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="console.html#GetY">GetY</a></b>: Word;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="console.html#Tabulate">Tabulate</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="console.html#PrintHex">PrintHex</a></b>(hex: DWORD);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="console.html#hexstr">hexstr</a></b>(val : longint;cnt : byte) : string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <b><a   href="console.html#Hex_Char">Hex_Char</a></b>(Number: Word): Char;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="console.html#PrintHexln">PrintHexln</a></b>(hex: DWORD);</code></td>
+</tr>
+</table>
+<a name="%40Variables"></a><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="console.html#xpos">xpos</a></b>: Integer = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="console.html#ypos">ypos</a></b>: Integer = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="console.html#Blank">Blank</a></b>: Word;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="console.html#vidmem">vidmem</a></b>: PChar = PChar($b8000);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="console.html#TextAttr">TextAttr</a></b>: Word = $07;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="console.html#HexTbl">HexTbl</a></b>: array[0..15] of char='0123456789ABCDEF';</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="kclearscreen"></a><code>procedure <b>kclearscreen</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Scroll"></a><code>procedure <b>Scroll</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetTextColor"></a><code>function <b>GetTextColor</b>: Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetTextBackground"></a><code>function <b>GetTextBackground</b>: Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="textcolor"></a><code>procedure <b>textcolor</b>(color:word);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TextBackground"></a><code>Procedure <b>TextBackground</b>(Color: word);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WritedwordLn"></a><code>procedure <b>WritedwordLn</b>(l: DWord);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="update_cursor"></a><code>procedure <b>update_cursor</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="kwritechr"></a><code>procedure <b>kwritechr</b>(c: Char);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="kwritestr"></a><code>procedure <b>kwritestr</b>(s: PChar);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="kwriteint"></a><code>procedure <b>kwriteint</b>(i: Integer);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WriteIntLn"></a><code>procedure <b>WriteIntLn</b>(i: Integer);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WriteLong"></a><code>procedure <b>WriteLong</b>(l: LongWord);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WriteLongLn"></a><code>procedure <b>WriteLongLn</b>(l: LongWord);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="kwritedword"></a><code>procedure <b>kwritedword</b>(i: DWORD);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WriteStrLn"></a><code>procedure <b>WriteStrLn</b>( S: PChar);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WritePCharLn"></a><code>procedure <b>WritePCharLn</b>(P: PChar);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WritePChar"></a><code>procedure <b>WritePChar</b>(P: PChar);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetXY"></a><code>function <b>GetXY</b>:Word;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetX"></a><code>function <b>GetX</b>: Word;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetY"></a><code>function <b>GetY</b>: Word;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Tabulate"></a><code>procedure <b>Tabulate</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PrintHex"></a><code>procedure <b>PrintHex</b>(hex: DWORD);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="hexstr"></a><code>function <b>hexstr</b>(val : longint;cnt : byte) : string;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Hex_Char"></a><code>Function <b>Hex_Char</b>(Number: Word): Char;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PrintHexln"></a><code>procedure <b>PrintHexln</b>(hex: DWORD);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="xpos"></a><code><b>xpos</b>: Integer = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ypos"></a><code><b>ypos</b>: Integer = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Blank"></a><code><b>Blank</b>: Word;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="vidmem"></a><code><b>vidmem</b>: PChar = PChar($b8000);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TextAttr"></a><code><b>TextAttr</b>: Word = $07;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="HexTbl"></a><code><b>HexTbl</b>: array[0..15] of char='0123456789ABCDEF';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2013-10-12 18:10:06</em>
+</span>
+</body></html>

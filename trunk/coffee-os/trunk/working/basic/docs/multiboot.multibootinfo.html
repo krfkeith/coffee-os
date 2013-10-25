@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>multiboot: packed record multibootinfo</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="multibootinfo"></a><h1 class="cio">packed record multibootinfo</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td>Hierarchy</td><td><a class="section"  href="#%40Fields">Fields</a></td><td>Methods</td><td>Properties</td></tr></table>
+<a name="%40Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="multiboot.html">multiboot</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type multibootinfo = packed record</code></p>
+<h2 class="description">Description</h2>
+&nbsp;<h2 class="overview">Overview</h2>
+<a name="%40Fields"></a><h3 class="summary">Fields</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#flags">flags</a></b>: DWORD;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#mem_lower">mem_lower</a></b>: DWORD;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#mem_upper">mem_upper</a></b>: DWORD;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#boot_device">boot_device</a></b>: DWORD;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#cmdline">cmdline</a></b>: DWORD;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#mods_count">mods_count</a></b>: DWORD;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#mods_addr">mods_addr</a></b>: DWORD;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#elf_sec">elf_sec</a></b>: <a   href="multiboot.elf_section_header_table_t.html">elf_section_header_table_t</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#mmap_length">mmap_length</a></b>: DWORD;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="multiboot.multibootinfo.html#mmap_addr">mmap_addr</a></b>: DWORD;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Fields</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="flags"></a><code><b>flags</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="mem_lower"></a><code><b>mem_lower</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="mem_upper"></a><code><b>mem_upper</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Amount of memory available below 1mb</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="boot_device"></a><code><b>boot_device</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Amount of memory available above 1mb</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="cmdline"></a><code><b>cmdline</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="mods_count"></a><code><b>mods_count</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="mods_addr"></a><code><b>mods_addr</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="elf_sec"></a><code><b>elf_sec</b>: <a   href="multiboot.elf_section_header_table_t.html">elf_section_header_table_t</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="mmap_length"></a><code><b>mmap_length</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="mmap_addr"></a><code><b>mmap_addr</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2013-10-12 18:10:06</em>
+</span>
+</body></html>

@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>multiboot</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit multiboot</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td>uses</td><td><a class="section"  href="#%40Classes">Classes, Interfaces, Objects and Records</a></td><td>Functions and Procedures</td><td><a class="section"  href="#%40Types">Types</a></td><td><a class="section"  href="#%40Constants">Constants</a></td><td>Variables</td></tr></table>
+<a name="%40Description"></a><h2 class="description">Description</h2>
+&nbsp;<a name="%40Uses"></a><h2 class="overview">Overview</h2>
+<a name="%40Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">packed record&nbsp;<a class="bold"  href="multiboot.elf_section_header_table_t.html"><code>elf_section_header_table_t</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">packed record&nbsp;<a class="bold"  href="multiboot.multibootinfo.html"><code>multibootinfo</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">packed record&nbsp;<a class="bold"  href="multiboot.module_t.html"><code>module_t</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">packed record&nbsp;<a class="bold"  href="multiboot.TMemoryMap.html"><code>TMemoryMap</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<a name="%40Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="multiboot.html#Pelf_section_header_table_t">Pelf_section_header_table_t</a></b> = &circ;<a   href="multiboot.elf_section_header_table_t.html">elf_section_header_table_t</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="multiboot.html#Pmultibootinfo">Pmultibootinfo</a></b> = &circ;<a   href="multiboot.multibootinfo.html">multibootinfo</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="multiboot.html#Pmodule_t">Pmodule_t</a></b> = &circ;<a   href="multiboot.module_t.html">module_t</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="multiboot.html#PMemoryMap">PMemoryMap</a></b> = &circ;<a   href="multiboot.TMemoryMap.html">TMemoryMap</a>;</code></td>
+</tr>
+</table>
+<a name="%40Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="multiboot.html#KERNEL_STACKSIZE">KERNEL_STACKSIZE</a></b> = $4000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="multiboot.html#MULTIBOOT_BOOTLOADER_MAGIC">MULTIBOOT_BOOTLOADER_MAGIC</a></b> = $2BADB002;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Pelf_section_header_table_t"></a><code><b>Pelf_section_header_table_t</b> = &circ;<a   href="multiboot.elf_section_header_table_t.html">elf_section_header_table_t</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Pmultibootinfo"></a><code><b>Pmultibootinfo</b> = &circ;<a   href="multiboot.multibootinfo.html">multibootinfo</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Pmodule_t"></a><code><b>Pmodule_t</b> = &circ;<a   href="multiboot.module_t.html">module_t</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PMemoryMap"></a><code><b>PMemoryMap</b> = &circ;<a   href="multiboot.TMemoryMap.html">TMemoryMap</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="KERNEL_STACKSIZE"></a><code><b>KERNEL_STACKSIZE</b> = $4000;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="MULTIBOOT_BOOTLOADER_MAGIC"></a><code><b>MULTIBOOT_BOOTLOADER_MAGIC</b> = $2BADB002;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2013-10-12 18:10:06</em>
+</span>
+</body></html>

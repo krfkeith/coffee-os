@@ -1,0 +1,325 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>x86</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit x86</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td>uses</td><td>Classes, Interfaces, Objects and Records</td><td><a class="section"  href="#%40FuncsProcs">Functions and Procedures</a></td><td><a class="section"  href="#%40Types">Types</a></td><td>Constants</td><td>Variables</td></tr></table>
+<a name="%40Description"></a><h2 class="description">Description</h2>
+<p>
+X86 Intel CPU specific poke/peek functions. This has been modified from FPC RTL and no longer matches it. However, it still supports X86-64 instructions. Added Misc functions and defs. &ndash;Jazz
+
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<a name="%40Uses"></a><h2 class="overview">Overview</h2>
+<a name="%40FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="x86.html#ReadPortB">ReadPortB</a></b> (Port : Longint): Byte;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="x86.html#ReadPortW">ReadPortW</a></b> (Port : Longint): Word;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="x86.html#ReadPortL">ReadPortL</a></b> (Port : Longint): Longint;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="x86.html#readportd">readportd</a></b> (port : word) : dword;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <b><a   href="x86.html#WritePortB">WritePortB</a></b> (Port : Longint; Value : Byte);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <b><a   href="x86.html#WritePortL">WritePortL</a></b> (Port : Longint; Value : Longint);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <b><a   href="x86.html#WritePortW">WritePortW</a></b> (Port : Longint; Value : Word);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="x86.html#writeportd">writeportd</a></b> (port : word ; val : dword);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="x86.html#enableInterrupts">enableInterrupts</a></b>; assembler;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="x86.html#disableInterrupts">disableInterrupts</a></b>; assembler;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="x86.html#flush_tlb">flush_tlb</a></b>; assembler;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="x86.html#popad">popad</a></b>; assembler;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="x86.html#pushad">pushad</a></b>; assembler;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="x86.html#popfd">popfd</a></b>; assembler;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="x86.html#pushfd">pushfd</a></b>; assembler;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="x86.html#btod">btod</a></b> (nb : byte) : dword;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="x86.html#wtod">wtod</a></b> (nb : word) : dword;</code></td>
+</tr>
+</table>
+<a name="%40Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="x86.html#uint">uint</a></b>=CARDINAL;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="x86.html#uint32">uint32</a></b> = Longword;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="x86.html#uint8">uint8</a></b>= byte;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="x86.html#uint16">uint16</a></b>=word;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="x86.html#cint8">cint8</a></b>                  = shortint;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="x86.html#cint32">cint32</a></b>                 = longint;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="x86.html#pbyte">pbyte</a></b> = &circ;byte;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="x86.html#pword">pword</a></b> = &circ;word;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="x86.html#PtrUInt8">PtrUInt8</a></b> =&circ;<a   href="x86.html#uint8">UInt8</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="x86.html#SInt32">SInt32</a></b>=<a   href="x86.html#cint32">cint32</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="x86.html#Sint8">Sint8</a></b>=<a   href="x86.html#cint8">cint8</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="x86.html#PtrUInt32">PtrUInt32</a></b>=&circ;Longword;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ReadPortB"></a><code>function <b>ReadPortB</b> (Port : Longint): Byte;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ReadPortW"></a><code>function <b>ReadPortW</b> (Port : Longint): Word;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ReadPortL"></a><code>function <b>ReadPortL</b> (Port : Longint): Longint;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="readportd"></a><code>function <b>readportd</b> (port : word) : dword;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WritePortB"></a><code>Procedure <b>WritePortB</b> (Port : Longint; Value : Byte);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WritePortL"></a><code>Procedure <b>WritePortL</b> (Port : Longint; Value : Longint);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WritePortW"></a><code>Procedure <b>WritePortW</b> (Port : Longint; Value : Word);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="writeportd"></a><code>procedure <b>writeportd</b> (port : word ; val : dword);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="enableInterrupts"></a><code>procedure <b>enableInterrupts</b>; assembler;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+extra functions</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="disableInterrupts"></a><code>procedure <b>disableInterrupts</b>; assembler;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="flush_tlb"></a><code>procedure <b>flush_tlb</b>; assembler;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="popad"></a><code>procedure <b>popad</b>; assembler;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="pushad"></a><code>procedure <b>pushad</b>; assembler;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="popfd"></a><code>procedure <b>popfd</b>; assembler;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="pushfd"></a><code>procedure <b>pushfd</b>; assembler;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="btod"></a><code>function <b>btod</b> (nb : byte) : dword;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="wtod"></a><code>function <b>wtod</b> (nb : word) : dword;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="uint"></a><code><b>uint</b>=CARDINAL;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+I noticed some issues with some C code being a little obscure. &ndash;Jazz Until you port the code over, this allows it to run ok.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="uint32"></a><code><b>uint32</b> = Longword;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="uint8"></a><code><b>uint8</b>= byte;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="uint16"></a><code><b>uint16</b>=word;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="cint8"></a><code><b>cint8</b>                  = shortint;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="cint32"></a><code><b>cint32</b>                 = longint;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="pbyte"></a><code><b>pbyte</b> = &circ;byte;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="pword"></a><code><b>pword</b> = &circ;word;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PtrUInt8"></a><code><b>PtrUInt8</b> =&circ;<a   href="x86.html#uint8">UInt8</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SInt32"></a><code><b>SInt32</b>=<a   href="x86.html#cint32">cint32</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Sint8"></a><code><b>Sint8</b>=<a   href="x86.html#cint8">cint8</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PtrUInt32"></a><code><b>PtrUInt32</b>=&circ;Longword;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2013-10-12 18:10:06</em>
+</span>
+</body></html>
