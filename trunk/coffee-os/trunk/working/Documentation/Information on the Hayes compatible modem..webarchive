@@ -1,365 +1,0 @@
-bplist00“_WebMainResource_WebSubresources’	
-_WebResourceTextEncodingName_WebResourceData_WebResourceFrameName^WebResourceURL_WebResourceMIMETypeUUTF-8OH£<html><head>
-<title>Information on the Hayes compatible modem.</title>
-</head><body link="blue" vlink="purple" bgcolor="white" text="black" background="bmain.gif">
-<!-- *** a blank table to get text of the left margin in NETSCAPE -->
-<table align="left" border="0" width="100%">
-<tbody><tr>
-<td width="37"><br></td>
-<td width="">
-
-<h1>Information on the Hayes compatible modem</h1>
-
-<p align="left"><font color="black" size="3" face="Courier New">
-See <a href="#bottom">bottom of this page</a> for source to the simple terminal programs and source for a <i>null modem</i> file transfer.<br>
-<br>
-Here I will discuss information on the Hayes compatible modem and some of its interesting features like speaker control, call waiting, and others.<br>
-If you don't see some info that you are looking for about modems, let me know and I will add it to this page.<br>
-<br>
-<br>
-<b>Modem Speaker Volume Control</b><br>
-The AT commands for the modem speaker control and volume levels are the same with all the high speed models. When adding AT commands to your existing init strings, you will need to be sure to place the commands at the end of the existing string.<br>
-<br>
-The high speed Hayes modems support two specific commands to control the volume level and the speaker controls. With the L<i>n</i> command, you can set the volume level. While with the M<i>n</i> command, you can control the speaker functions. (<i>n</i> being a numeric value from 0 through 3).<br>
-<br>
-<b>Speaker Volume Level</b>
-<font size="4" face="">
-</font></font></p><font color="black" size="3" face="Courier New"><font size="4" face=""></font><pre><font size="4" face="">AT Command    Setting Result
-  L0           Low speaker volume
-  L1           Low speaker volume
-  L2           Medium speaker volume
-  L3           High speaker volume
-</font></pre>
-<br>
-<b>Speaker Function Option</b>
-<font size="4" face="">
-</font><pre><font size="4" face="">AT Command    Setting Result
-  M0           Speaker always off.
-  M1           Speaker on while off hook until carrier detected.
-  M2           Speaker always on while off hook;stays on after carrier is detected.
-  M3           Speaker off as digits are dialed, then on until carrier is detected.
-</font></pre>
-<br>
-<br>
-<b>Hayes compatible <i>AT</i> commands</b><br>
-NOTE: All command strings are to be preceded by "AT"
-<font size="4" face="">
-</font><pre><font size="4" face="">AT Command    Setting Result
- A/            Re-execute command.
- A             Go off-hook and attempt to answer a call.
- B0            Select V.22 connection at 1200 bps.
- B1            Select Bell 212A connection at 1200 bps.
- Dn            Dial modifier.
- E0            Turn off command echo.
- E1            Turn on command echo.
- H0            Initiate a hang-up sequence.
- H1            If on-hook, go off-hook and enter command mode. 
- I0            Report product code. 
- I1            Report pre-computed checksum. 
- I2            Report OK. 
- I3            Report firmware revision, model, and interface type. 
- I4            Report response programmed by an OEM. 
- I5            Report the country code parameter. 
- I6            Report modem data pump model and code revision. 
- L1            Set low speaker volume. 
- L2            Set medium speaker volume. 
- L3            Set high speaker volume. 
- M0            Turn speaker off. 
- M1            Turn speaker on during handshaking and turn speaker 
-                off while receiving carrier. 
- M2            Turn speaker on during handshaking and while receiving carrier. 
- M3            Turn speaker off during dialing and receiving carrier and turn
-                speaker on during  answering. 
- N0            Turn off automode detection. 
- N1            Turn on automode detection. 
- O0            Go on-line. 
- O1            Go on-line and initiate a retrain sequence. 
- P             Force pulse dialing. 
- Q0            Allow result codes to DTE. 
- Q1            Inhibit result codes to DTE. 
- Sn            Select S-Register as default.
- Sn?           Return the value of S-Register n.
- =v            Set default S-Register to value v.
- ?             Return the value of default S-Register.
- T             Force DTMF dialing.
- V0            Report short form (terse) result codes.
- V1            Report long form (verbose) result codes.
- W0            Report DTE speed in EC mode.
- W1            Report line speed, EC protocol and DTE speed.
- W2            Report DCE speed in EC mode.
- X0            Report basic call progress result codes, i.e.,
-                OK, CONNECT, RING, NO CARRIER (also, for  busy, if
-                enabled, and dial tone not detected), NO ANSWER and ERROR.
- X1            Report basic call progress result codes and connections 
-                speeds (OK, CONNECT, RING, NO  CARRIER (also, for busy, if
-                enabled, and dial tone not detected), NO ANSWER, CONNECT XXXX,
-                and ERROR.
- X2            Report basic call progress result codes and connections speeds,
-                i.e., OK, CONNECT, RING,  NO CARRIER (also, for busy, if 
-                enabled, and dial tone not detected), NO ANSWER, CONNECT XXXX,
-                and ERROR.
- X3            Report basic call progress result codes and connection rate, i.e.,
-                OK, CONNECT, RING, NO  CARRIER, NO ANSWER, CONNECT XXXX, BUSY,
-                and ERROR.
- X4            Report all call progress result codes and connection rate, i.e.,
-                OK, CONNECT, RING, NO  CARRIER, NO ANSWER, CONNECT XXXX, BUSY,
-                NO DIAL TONE and ERROR.
- Y0            Disable long space disconnect before on-hook. 
- Y1            Enable long space disconnect before on-hook. 
- Z0            Restore stored profile 0 after warm reset. 
- Z1            Restore stored profile 1 after warm reset. 
- &amp;C0           Force RLSD active regardless of the carrier state. 
- &amp;C1           Allow RLSD to follow the carrier state. 
- &amp;D0           Interpret DTR ON-to-OFF transition per &amp;Qn:
- &amp;Q0,&amp;Q5,&amp;Q6   The modem ignores DTR. 
- &amp;Q0,&amp;Q5,&amp;Q6   Asynchronous escape. 
- &amp;D2           Interpret DTR ON-to-OFF transition per &amp;Qn:
- &amp;Q0 -- &amp;Q6    The modem hangs up. 
- &amp;D3           Interpret DTR ON-to-OFF transition per &amp;Qn:. 
- &amp;Q0,&amp;Q5,&amp;Q6   The modem performs soft reset. 
- &amp;F0           Restore factory configuration 0. 
- &amp;F1           Restore factory configuration 1. 
- &amp;K0           Disable DTE/DCE flow control. 
- &amp;K3           Enable RTS/CTS DTE/DCE flow control. 
- &amp;K4           Enable XON/XOFF DTE/DCE flow control. 
- &amp;K5           Enable transparent XON/XOFF flow control. 
- &amp;K6           Enable both RTS/CTS and XON/XOFF flow control. 
- &amp;Q0           Select direct asynchronous mode. 
- &amp;Q5           Modem negotiates an error corrected link. 
- &amp;Q6           Select asynchronous operation in normal mode. 
- &amp;V            Display current configurations. 
- &amp;V1           Display connection statistics.
- &amp;W0           Store the active profile in NVRAM profile 0. 
- &amp;W1           Store the active profile in NVRAM profile 1. 
- &amp;Y0           Recall stored profile 0 upon power up. 
- &amp;Y1           Recall stored profile 1 upon power up. 
- &amp;Zn=x         Store dial string x (to 34) to location n (0 to 3). 
- %E0           Disable line quality monitor and auto retrain. 
- %E1           Enable line quality monitor and auto retrain. 
- %E2           Enable line quality monitor and fallback/fall forward. 
- %L            Return received line signal level. 
- %Q            Report the line signal quality. 
- \N0           Select normal speed buffered mode.
- \N1           Select direct mode.
- \N2           Select reliable link mode.
- \N3           Select auto reliable mode.
- \N4           Force LAPM mode.
- \N5           Force MNP mode.
- \V0           Connect messages are controlled by the command settings X, W,
-                and S95.
- \V1           Connect messages are displayed in the single line format. 
-</font></pre>
-<br>
- +MS  -  Select Modulation 
-This extended-format command selects the modulation and, optionally, enables or disables automode, specifies the lowest and highest connection rates, selects m-Law or A-Law codec type, and enables or disables robbed bit signaling generation (server modem) or detection (client modem) using one to five subparameters. The command format is:<br>
-+MS=[mod],[automode],[min_rate],[max_rate],[x_law],[rb_signaling]{CR}<br>
-<br>
-<i>Notes:</i><br>
-For 14400 bps and lower speeds, the N<i>n</i> command and S37 register can alternatively be used, in which case the +MS subparameters will modified to reflect the N<i>n</i> and S37=<i>x</i> settings. Use of the N<i>n</i> and S37=<i>x</i> commands is not recommended but is provided for compatibility with existing communication software. (S37 is not updated by the +MS command.)<br>
-<br>
-Subparameters not entered (enter a comma only or {CR} to skip the last subparameter) remain at their current values. <br>
-<br>
-Reporting Supported Options:<br>
-The modem can send a string of information to the DTE consisting of supported options using the following command:<br>
-+MS=?<br>
-The response is:<br>
-+MS: (list of supported {mod} values), (list of supported {automode} values), (list of supported {min_rate} values), (list of supported {max_rate} values), (list of supported {x_law} values), (list of supported {rb_signaling} values)<br>
-For example:<br>
-+MS: (0,1,2,3,9,10,11,56,64,69),(0,1),(300-33600),(300- 56000),(0,1),(0,1) <br>
-<br>
-<br>
-Distinctive Ring Parameters<br>
--SDR=0 Disable Distinctive Ring.<br>
--SDR=1 Enable Distinctive Ring Type 1.<br>
--SDR=2 Enable Distinctive Ring Type 2.<br>
--SDR=3 Enable Distinctive Ring Type 1 and 2.<br>
--SDR=4 Enable Distinctive Ring Type 3.<br>
--SDR=5 Enable Distinctive Ring Type 1 and 3.<br>
--SDR=6 Enable Distinctive Ring Type 2 and 3.<br>
--SDR=7 Enable Distinctive Ring Type 1, 2, and 3. Use this command to determine the ring types on your phone system.<br>
-<br>
-<br>
-<b>Error Correction Commands</b><br>
-%C0 Disable data compression.<br>
-%C1 Enable MNP 5 data compression.<br>
-%C2 Enable V.42 bis data compression.<br>
-%C3 Enable both V.42 bis and MNP 5 compression.<br>
-\A0 Set maximum block size in MNP to 64.<br>
-\A1 Set maximum block size in MNP to 128.<br>
-\A2 Set maximum block size in MNP to 192.<br>
-\A3 Set maximum block size in MNP to 256.<br>
-<br>
-<br>
-<b>Caller ID commands</b><br>
-#CID=0 Disable Caller ID.<br>
-#CID=1 Enable Caller ID with formatted presentation.<br>
-#CID=2 Enable Caller ID with unformatted presentation.<br>
-<br>
-Common Configurations<br>
-<br>
-Force V.42 bis data compression with LAP-M error correction. AT\N4%C2-K0<br>
-Force V.42 bis data compression with MNP error correction. AT\N5%C2<br>
-Force MNP 5 data compression with MNP error correction. AT\N5%C1<br>
-Note: With the setup strings in examples 1-3, if the remote is unable to negotiate the desire rate mode, the modem will disconnect and respond with NO CARRIER.<br>
-Auto negotiate data compression and error correction. AT&amp;F (factory defaults) or AT\N3%C3 In this mode, the modem prefers LAP-M over MNP 10, MNP 10 over MNP 4, and V.42 bis over MNP 5. If error correction is not negotiated, the modem will connect in normal mode. <br>
-<br>
-</font>
-<b>Setting up Caller ID on the ACCURA Voice models</b><br>
-<br>
-Caller ID is a service provided by most regional telephone companies which displays the calling party's telephone number on a Caller ID monitoring device. The variety of Caller ID devices include Caller ID "boxes," telephones and modems. It should be noted that all Caller ID support is not equal. Some phone companies provide only the number of the calling party, while others provide both the name and number.<br>
-<br>
-In terms of what the monitoring device "sees" when receiving a call, the Caller ID feature is simply an ASCII text string being sent to the modem between the first and second rings. Note that in order to use Caller ID an end user requires support by the modem, regional telephone company, and application software.<br>
-<br>
-The possibilities for this service are endless. Imagine a database that will tell you who is calling as well as retrieve notes about the last conversation you had before you even pick up the phone. A BBS could identify a caller and log them in automatically. For a home user, you could just have the software make a list of everyone who calls, and with a bit of scripting, have it disconnect calls from a particular number. You could also set your computer up to call a pager when a certain person calls.<br>
-<br>
-The format that you would use for setting up the Caller ID feature with your Hayes modem would depend upon the model that you are using. Click on the heading that corresponds to the modem that you are setting up.<br>
-<br>
-<br>
-The command to use Caller ID on your ACCURA 28.8 DSVD Modem or ACCURA 28.8 with Voice is AT#CID=<i>n</i> where <i>n</i>=0,1 or 2.<br>
-<br>
-AT#CID=0 Turns Caller ID off. This is the default.<br>
-AT#CID=1 TLong Format Caller ID.<br>
-AT#CID=2 Gives Caller ID info using an unformatted output.<br>
-<br>
-An example of the results of a call with AT#CID=1 set would be: <br>
-<br>
-DATE = 0922
-TIME = 1350
-CALR = 7704411617
-NAME = HAYES MICROCOMP 
-<br>
-AT#CID=2 would put all this information onto one line using a raw data format: <br>
-<br>
-MESG = 802701083039323231333439020A34303434343838393836070F484 1594553204D4943524F434F4D5036<br>
-<br>
-Hayes modems with Caller ID also support the command AT#CID? which tells the current Caller ID mode. <br>
-<br>
-There are two special messages that may be sent instead of Caller ID information: O or P. "O" means that the caller is out of the Caller ID service area, usually a long distance call. "P" is for Private and will be displayed for callers who have made arrangements with their phone company to have their numbers blocked. <br>
-<br>
-What is single message formatting? What is multiple message formatting? Are both supported in Hayes modems? What's the difference?<br>
-<br>
-Single message formatting was the original style of Caller ID and only provided you with the telephone number of the calling party. Multiple message formatting supplies you with both the telephone number and the name of the person to whom the number belongs. Both formats are supported by Hayes modems and do not require any changes in the modem's setup. All available information will be shown when Caller ID is enabled. If you are not seeing the NAME line in your CID info, the phone company might not be providing it.<br>
-<br>
-I know my modem supports Caller ID and my phone company provides it, but nothing appears on my screen. What's wrong? <br>
-<br>
-Caller ID is a service that you have to pay your phone company to receive. Make sure that Caller ID is included in your monthly statement. If you know you have subscribed to this service, try the following to test the modem. <br>
-<br>
-Here is an example in BASIC to get the CALLER ID from a call:
-<pre><font size="3" face="">CLS
-
-OPEN "COM1:9600,N,8,1" FOR RANDOM AS #1
-  PRINT #1, "+++"        ' tell modem "here comes AT commands"
-  PRINT #1, "AT#CID=1"   ' tell modem to allow Caller ID
-  PRINT #1, "ATS0=3"     ' tell modem to answer on third ring
-
-  DO
-    IF NOT EOF(1) THEN
-      PRINT INPUT$(1,#1)
-    END IF
-  LOOP UNTIL LEN(INKEY$)
-CLOSE
-END
-</font></pre>
-Now tell someone to call you.  You should get something similar to the following:<br>
-<br>
-+++<br>
-AT#CID=1<br>
-ATS0=3<br>
-<br>
-RING<br>
-<br>
-DATE = 0922<br>
-TIME = 1350<br>
-NMBR = 5555555<br>
-NAME = THECALLERSNAME<br>
-<br>
-RING<br>
-<br>
-If you don't, it's possible that another device on the line could be causing interference. Try removing any other Caller ID boxes or answering machines from the line and repeat the test.<br>
-<br>
-If you see this information in this test, but not in your regular communications software, be aware that some programs may not be expecting to see this information, and are not able to display it for you. <br>
-<br>
-<br>
-<b>Other notes</b><br>
-When sending AT commands you can include multiple commands on the same line with only one preceding <i>AT</i>.  For example:<br>
-atz<br>
-atdt<br>
-5551234<br>
-{CR}<br>
-<br>
-can be entered on one line as:<br>
-atzdt5551234{CR}<br>
-<br>
-I found most of this info at Hayes web site:<br>
-<a href="http://www.hayes.com/support/techtips/index.htm"><font size="2">http://www.hayes.com/support/techtips/index.htm</font></a><br>
-<br>
-<a name="bottom"></a>
-<hr>
-Here is the simple terminal program sources in versions of Assembler, Basic, C and Pascal.<br>
-<br>
-Version:  1.00b<br>
-Author:  Ben Lunt (Forever Young Software(R))<br>
-Date:  02 Jan 1998<br>
-      Assembler:  MASM 5.10<br>
- Basic Compiler:  Quick Basic 4.5<br>
-     C Compiler:  Quick C 2.5<br>
-Pascal Compiler:  Turbo Pascal 6.0<br>
-<br>
-Download the zip file from <a href="zips/simpterm.zip">here</a>, or below, and
-unzip it (See my <a href="links.htm">links</a> page for PKUNZIP) in a directory of your choice<br>
-<i>(To download, I suggest right clicking the link and saving to disk)</i><br>
-<br>
-<a href="zips/simpterm.zip">SIMPTERM.ZIP</a> (8,140) should contain 6 files:<br>
-LINKA.ASM	  (8,188) - The assembler version<br>
-LINKA.INC	  (1,638) - Include file for assembler version<br>
-LINKB.BAS	    (321) - The Basic version<br>
-LINKC.C	  (4,857) - The C version<br>
-LINKC.H	  (1,915) - Include file for C version<br>
-LINKP.PAS	  (5,876) - The Pascal version<br>
-<i>If there are any differences in the package you got, please let me know.</i><br>
-<br>
-<hr>
-Here is the simple <i>null modem</i> file transfer routine.  When both machines are running
-this basic program, you can transfer files between them.<br>
-<br>
-Version:  1.00b<br>
-Author:  Ben Lunt (Forever Young Software(R))<br>
-Date:  13 Feb 1998<br>
- Basic Compiler:  Quick Basic 4.5<br>
-<br>
-Download the bas file from <a href="nullmod.bas">here</a> (3,582 bytes)<br>
-<br>
-The comments at the top of the .BAS file show you how to use this routine.<br>
-It also shows how to create a <i>null modem</i> cable (you can buy one for about $15 or you can get the supplies at <i>Radio Shack</i>¬Æ and make one yourself for about $5).<br>
-
-<br><br>
-All rights reserved<br>
-<a href="legal.htm">Legal Notice</a><br>
-Copyright ¬© 1984-2010  Forever Young Software<br>
-<a href="consult.htm">Forever Young Software for Hire</a><br>
-<a href="index.htm">Return to My Home Page</a><br>
-<img src="/cgi-bin/Count.cgi?df=fys.dat&amp;ft=4"><br>
-
-<p></p>
-</td>
-</tr>
-</tbody></table>
-
-
-</body></html>P_,http://www.frontiernet.net/~fys/modminfo.htmYtext/html¢‘_WebResourceResponseO±GIF89aÄ ˜  ˇˇˇˇ˛ˇ˛ˇ˛˛˛˛˛˝˛˝˛˝˝˝˝˝¸˝˝˚˝¸˝¸¸¸¸¸˚¸¸˙¸˚˝˚˚¸˚˚˚˚˚˘˚˚¯˚˙˚˙˙˙˙˙¯˙˘˚˘˘˘˘˘˜˘˘ı˘¯˚¯¯˙¯¯¯¯˜˙˜˜˘˜˜˜˜ˆ˘ˆˆˆˆı˘ıı¯ıııııÒııÔıÙ˜ÙÙÙÙÙÔÙÛÛÛÛÌÛÚ˜ÚÚÚÚÒˆÒÒÒÒÔÔÔÔÊÔÓÙÓÓÛÓÓÓÓÌÌÌÏÛÏÏÏÏÎÚÎÎÎÎÍÍÍÈÈÈËËËÁÔÁÁÁÁÊÔÊÊÊÊÂÌÂÂÂÂ‰‰‰„„„„’„„‘„‚‚‚···‡Í‡‡‡‡ﬂﬂﬂﬁÈﬁﬁﬁﬁ›››‹‹‹‹ ‹€€€⁄⁄⁄ŸŸŸÿÂÿÿÿÿ◊◊◊◊¬◊÷„÷÷÷÷’’’‘‘‘”””“·““““———–––œœœŒŒŒÕÕÕÃÃÃÀÀÀ   ………»»»«««∆∆∆√√√¬¬¬¡¡¡¿¿¿øøøººº∫∫∫∑∑∑∂∂∂¥¥¥≥≥≥≤≤≤±±±ØØØÆÆÆ≠≠≠¨¨¨©©©®®®ßßß¢¢¢°°°†††ûûûùùùúúúôôôôfôòòòóóóñññî∑îîîîìììëëëêêêèèèçççåååãããäääâââÜÜÜÑÑÑÉÉÉÅÅÅ~Æ~~~~yyyxxxtttqqqnnnmmmkkkjjjiiihhhfôffffdddcccbbbaaa`è````^^^]]]\\\[[[ZZZWWWUUUTTTPPPNNNLLLKKKIIIHHHFFFCCCBBB@@@???>>>===<<<;;;:::9998887775554443f3333222///...---,,,+++)))(((%%%$$$"""                                                                                             ,    Ä  ˇ *U»‘@C•*,h™°) #JúH±¢≈ã3j‹»±£«è CäI≤§…ì(S™\…≤•Àó0c úI≥¶Õõ8sÍ‹…≥ßœü@É
-J¥®—£Hì*]z±T)ÑFUh*°°™L≥j› µ´◊Ø`√äK∂¨Ÿ≥h”™]À∂≠€∑pÅBu°¬ßU∆›À∑ØﬂøÄL∏∞·√à+^Ãÿ¨@ÇüJ¶Í∞a„Àò3kﬁÃπ≥Áœ†CãM∫¥[ßu>-x5°^”∞cÀûMª∂Ì€∏sÎﬁÕ˚\…Q'3t®ÏaÔ„»ì+_ŒºπÛÁ–£K˙x`6ﬂ¬=ªkÍ™©‚”√ãˇOæº˘ÛË”´_œuB>ÖD·‚ıÔÇÏÛÎﬂœøøˇˇ ( Yør∆-Æ4íà*·ÁV  °ÑVh·Ö*Ä vË·á·U8õ@“+≠ÑWUWu4°0∆8!à4÷h„çÄ„é<ˆ¯ô{â¥R)íÿÅ»!w¨qJ(ô‚à'5 ƒJ8·DK a  /†ÄÑ˘¿ó0RË„ôh¶©Êöl∂Èfl>Uç/¿hÚH$uÿ1ÑéÂ0«z¯· jíF,x	ÊX∞¡çN0fôfæiÈ•òf™È¶úvZSu≠25¡ÄB…"eò·∆m@ƒ¬D(ˇÒ`º·mºq.8∫Å ÇèJ™Ä3z™Ï≤Ã6ÎÏ≥–ZËﬁA9c6øàÚâ)£<r'#Ç†àSLÉ,îÒFt‡!'§‡¬º,§pêNäl¥¸ˆÎÔø ,føóZ!À0#À,ªƒBã-πÏÚ .¨∞BJ'è∏°∆tLbIM–P√7‘ É,å‡ÅcÀÁ¿0«,ÛÃ4◊l≥Nè—ŸpëaJ*ΩSÃ1…}Ã1≈‘2À+ò¿Ò%òpb %n Ñ;‰pÚ	+áπÔÕ`á-ˆÿdó˝Ô¥¿±®veb1«3å.èò"L4¡T2∆HˇD4∏0¬L‡≤Ÿà'Æ¯‚å7.`ú:ÛÏPB•T4Ä/»¡ 5ÿh”L6À £âYH—BhÕç>µ„∞«.˚Ï¥◊NZu;?’Zkîbπl -·x„M7»¬Ü[XÒ>‹ x±
-ºl˚ıÿgØ˝ˆ‹ÉÂTi´FóÔ†¿å‡√6·tì4m∞ÄD^X—ƒ:¿êÇn}˜ † H¿ä§`	üdZcπÛm‡5hC6∏·i†¢ ÄA¬†Ö(Å5`ˇ,p8öÑ(L°
-'ê»LE|v!_D$‰•	x 0Ä’Ù–>d¡
-_0Éˇ∏ %¯ Ñ¡bŸÎV»ƒ&:ÒâPÙîS^∏3ª ƒ °·˘n¡	@,√“êÜ20O
-–C"Î\˜ø(∫Òçpå£‘B©ƒê*Æ1D—wÇ‰@M®ƒê™2å·Yxx@Æ¨Ñså§$'I…Jgä	|aw¨°,:p.∏Åê+xa√¥0Ö%§Ó'†^-IÀZ⁄Úñ∏,L´®¢+V∆8Yû@¿Ç.
-AVU»Ç¥`”-≤”#\ırIÕjZÛöÿÙ
-‰“ˆÀºTÆ|5Lüj†É)5¡	OxBî0‹‡˚k›≥Iœz⁄Ûû¯T	Ó∂ñª™ÙŒrÊ{Ä<p– Rà  Ï‡ù´#ú·ÊôœäZÙ¢≠Á˜¢@ùBÜ¡t A] É‰@(Õ¡ó|Iäçç©LgJ”H"–`π£K'≥x9ëé@^.x`îq-_döeMó ‘¶:ızª§¢N_x-
-ÙW ¡	∂zÇ‡ãp˙RÍS«J÷≤öïf ;_)http://www.frontiernet.net/~fys/bmain.gifYimage/gifOGbplist00‘	
-X$versionT$topY$archiverX$objects Ü†—_WebResourceResponseÄ_NSKeyedArchiverØ&,-345MNOPQRSTUVWXYZ[\M]^bcU$null› !"#$%V$classR$3R$8S$10S$11R$5R$6R$4R$7R$2R$9R$0R$1ÄÄÄ ÄÄÄÄÄ ”'()$+WNS.base[NS.relativeÄÄ Ä_)http://www.frontiernet.net/~fys/bmain.gif“./01X$classesZ$classname¢12UNSURLXNSObject#A∞¸Èˆ·z»”6789CWNS.keysZNS.objectsÄ©:;<=>?@ABÄ	Ä
-ÄÄÄÄÄÄÄ©DEFGHIJKLÄÄÄÄÄÄÄÄÄZKeep-Alive]Accept-RangesVServer\Content-TypeTDate^Content-LengthTEtagZConnection]Last-Modified_timeout=15, max=99Ubytes_SApache/2.2.9 (Debian) mod_ldap_userdir/1.1.14 PHP/5.2.6-1+lenny3 with Suhosin-PatchYimage/gif_Tue, 12 Jan 2010 10:01:13 GMTT2225_"1700016-8b1-46151c146d077"_Sun, 25 Jan 2009 17:14:29 GMT“./_`£`a2_NSMutableDictionary\NSDictionary±“./de£ef2_NSHTTPURLResponse]NSURLResponse     ) 2 7 : P R d Ö ã ¶ ≠ ∞ ≥ ∑ ª æ ¡ ƒ «   Õ – ” ’ ◊ Ÿ € › ﬂ · „ Â Á È Î Ú ˙
-8=FQTZclnu}àäîñòöúû†¢§¶∞≤¥∂∏∫ºæ¿¬Õ€‚ÔÙ!6<íúº¡ﬂˇ+.37K             g              Y‘OûGIF89ab  Ò     4I  ˇ ≥∆Î!˛TCount.cgi 2.5,(Jul-17-1999-1)
-By Muhammad A Muquit
-http://www.fccc.edu/users/muquit/ ,    b   ˛úè©ÀÌ£ú¥⁄õÇ	º˚Ü‚HñÊ˘mË ∂Æ9p*@◊ˆçÁ˙Œ˜æØö˝Üƒ¢qåjÇ¶Ûyå˛ûTÅ1…°Y´Õõu˜ıÖ{·-0ÊY±K¥ÍM3ÂπÆ∏¸v∫ßk•POfg®&&H8G◊'£§e®ìπ8Yáx9âŸ®ÒËV©à≥9zYä'G ¿Fyój∫àz˙ Í˜Ÿ≈5¶Kµw«7™wÎòÖ6U∂¨*uXu‘JÈk∏˚ÃH*Lm;+^ËzÏô>Œ^N.Y,⁄æÓ>œ˘.o˛LÔûO⁄<a¿
-ZbfnO<l	ïMíÜ!DtBú¡ÅÜëõ¥ "˘2z¸¯Üë$K.pd2• 2^∏|	3¶Ãô4W  ;_<http://www.frontiernet.net/cgi-bin/Count.cgi?df=fys.dat&ft=4Oƒbplist00‘	
-X$versionT$topY$archiverX$objects Ü†—_WebResourceResponseÄ_NSKeyedArchiverØ&,-345GHIJKLMNOPQKRVWU$null› !"#$%V$classR$3R$8S$10S$11R$5R$6R$4R$7R$2R$9R$0R$1ÄÄÄ ÄÄÄÄÄ ”'()$+WNS.base[NS.relativeÄÄ Ä_<http://www.frontiernet.net/cgi-bin/Count.cgi?df=fys.dat&ft=4“./01X$classesZ$classname¢12UNSURLXNSObject#A∞¸ÄÛ Ê»”6789@WNS.keysZNS.objectsÄ¶:;<=>?Ä	Ä
-ÄÄÄÄ¶ABCDEFÄÄÄÄÄÄVServer\Content-Type^Content-LengthTDateZKeep-AliveZConnection_SApache/2.2.9 (Debian) mod_ldap_userdir/1.1.14 PHP/5.2.6-1+lenny3 with Suhosin-PatchYimage/gifS414_Tue, 12 Jan 2010 10:05:39 GMT_timeout=15, max=99“./ST£TU2_NSMutableDictionary\NSDictionaryû“./XY£YZ2_NSHTTPURLResponse]NSURLResponse     ) 2 7 : P R d  Ö † ß ™ ≠ ± µ ∏ ª æ ¡ ƒ «   Õ œ — ” ’ ◊ Ÿ € › ﬂ · „ Â Ï Ù EJS^agpy{Çäïóû†¢§¶®™±≥µ∑πªΩƒ—‡Â˚Q[_îôù≥¿√»Ã‡             [              Ó    1 < Z l É í ® ÆIUIVIÖIèIíIõI±RfRíRúVÁVXíX—                           \ô
