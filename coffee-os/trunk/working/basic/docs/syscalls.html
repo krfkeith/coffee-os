@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>syscalls</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit syscalls</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td>uses</td><td><a class="section"  href="#%40Classes">Classes, Interfaces, Objects and Records</a></td><td><a class="section"  href="#%40FuncsProcs">Functions and Procedures</a></td><td><a class="section"  href="#%40Types">Types</a></td><td><a class="section"  href="#%40Constants">Constants</a></td><td><a class="section"  href="#%40Variables">Variables</a></td></tr></table>
+<a name="%40Description"></a><h2 class="description">Description</h2>
+<p>
+Syscall Handler (IE: Ring3-&gt;Ring0(Kernel) calls for HW)
+
+<p>Set the [AH,AL]EBX as the function to set[putpixel,etc...] and the regs as follows... EAX[ax,al] == x,y coordinates ECX (other data) EDX == function status returned to int81[pass/failed] ESI ==&gt; string pointer(if needed)
+
+<p>Int 81 is CoffeeOS specific graphmode calls for video modes. This in effect becomes X11.
+
+<p>I dont intend on copying Linux code verbatim, but some calls are necessary when we setup user mode. The bare bones are here.Linux is a complex beast.Let us set our own settings.We don't need everything that Linux kernel uses,GNU or not. Not going to Re-GNU nor Re-POSIX nor Re-*NIX anything.
+
+<p>The syscalls and signal units are the ring 3 code. &ndash;Jazz</p>
+<a name="%40Uses"></a><h2 class="overview">Overview</h2>
+<a name="%40Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold"  href="syscalls.TRegisters.html"><code>TRegisters</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<a name="%40FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="syscalls.html#unknownSyscall">unknownSyscall</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a   href="syscalls.html#SyscallHandlerVESA">SyscallHandlerVESA</a></b>(var r:<a   href="syscalls.TRegisters.html">TRegisters</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="syscalls.html#init_syscalls">init_syscalls</a></b>;</code></td>
+</tr>
+</table>
+<a name="%40Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="syscalls.html#PRegisters">PRegisters</a></b> = &circ;<a   href="syscalls.TRegisters.html">TRegisters</a>;</code></td>
+</tr>
+</table>
+<a name="%40Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="syscalls.html#MaxSyscalls">MaxSyscalls</a></b>=$06;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="syscalls.html#MaxsyscallsVESA">MaxsyscallsVESA</a></b>=$00;</code></td>
+</tr>
+</table>
+<a name="%40Variables"></a><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="syscalls.html#ebxVAL">ebxVAL</a></b>:longint;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="syscalls.html#ecxVAL">ecxVAL</a></b>:longint;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="syscalls.html#proc">proc</a></b>:pointer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="syscalls.html#ahVAL">ahVAL</a></b>:byte;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="syscalls.html#VAL">VAL</a></b>:byte;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="syscalls.html#syscallarray">syscallarray</a></b>:array [0..6] of TProcedure;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="syscalls.html#SyscallsOnline">SyscallsOnline</a></b>:boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="syscalls.html#SysCallsOnlineVESA">SysCallsOnlineVESA</a></b>:boolean;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="unknownSyscall"></a><code>procedure <b>unknownSyscall</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SyscallHandlerVESA"></a><code>procedure <b>SyscallHandlerVESA</b>(var r:<a   href="syscalls.TRegisters.html">TRegisters</a>);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="init_syscalls"></a><code>procedure <b>init_syscalls</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PRegisters"></a><code><b>PRegisters</b> = &circ;<a   href="syscalls.TRegisters.html">TRegisters</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Syscalls:
+
+<p>syscalls are run as an interrupt for ring 3 level code. Basically it says for anything the kernel runs or uses, (like writeln/readln), call that procedure/function, but do in WITHIN a interrupt.(this one.)
+
+<p>Trying to call kernel level functions such as these (ring0 code) without using syscalls will cause a GPF if done with ring3 mode.This code uses the constant list and array.MUST be SPECIFIED.
+
+<p>Test with Care.The code to activate Ring3 Mode is in the main kernel file. That kernel Ring3 code INTENTIONALLY DISABLED for now.
+
+<p>The only thing that has to change here are functions that use variables so that they take them directly off of CPU registers and they are not passed directly(indirect assignment)
+
+<p>DO NOT FORK a syscall.Syscalls run as Ring0, process ID 0 (kernel) ONLY.Any other types of calls will cause a GPF while in ring3 mode.
+
+<p>registers open are:
+
+<p>[longword/longint] ecx(ch,cl if byte, cx if word or int) edx(dh,dl if byte, dx if word or int) esi(string index) edi(Dword index??) ..and a few other non standard registers
+
+<p>&ndash;Jazz</p>
+</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="MaxSyscalls"></a><code><b>MaxSyscalls</b>=$06;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="MaxsyscallsVESA"></a><code><b>MaxsyscallsVESA</b>=$00;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Must be hardcoded</p>
+</td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ebxVAL"></a><code><b>ebxVAL</b>:longint;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Nothing here for now, no graph modes.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ecxVAL"></a><code><b>ecxVAL</b>:longint;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Nothing here for now, no graph modes.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="proc"></a><code><b>proc</b>:pointer;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ahVAL"></a><code><b>ahVAL</b>:byte;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="VAL"></a><code><b>VAL</b>:byte;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="syscallarray"></a><code><b>syscallarray</b>:array [0..6] of TProcedure;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SyscallsOnline"></a><code><b>SyscallsOnline</b>:boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+the address of Procedure named X.Used with syscalls.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SysCallsOnlineVESA"></a><code><b>SysCallsOnlineVESA</b>:boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+no point in calling int80 if not brought online yet. (this is a Linux bugfix if calling from inside of a linux box and the VM or host OS launches an int 80 before we can handle it.)</p>
+</td></tr>
+</table>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2013-10-12 18:10:06</em>
+</span>
+</body></html>

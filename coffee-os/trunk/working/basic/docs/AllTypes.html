@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>All Types</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="allitems">All Types</h1>
+<table class="itemstable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemunit">Unit</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="x86.html#cint32">cint32</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="x86.html#cint8">cint8</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="x86.html#pbyte">pbyte</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="multiboot.html#Pelf_section_header_table_t">Pelf_section_header_table_t</a></td>
+<td class="itemunit"><a class="bold"  href="multiboot.html">multiboot</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="Heap.html#PHeader">PHeader</a></td>
+<td class="itemunit"><a class="bold"  href="Heap.html">Heap</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="Heap.html#PHeap">PHeap</a></td>
+<td class="itemunit"><a class="bold"  href="Heap.html">Heap</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="multiboot.html#PMemoryMap">PMemoryMap</a></td>
+<td class="itemunit"><a class="bold"  href="multiboot.html">multiboot</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="multiboot.html#Pmodule_t">Pmodule_t</a></td>
+<td class="itemunit"><a class="bold"  href="multiboot.html">multiboot</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="multiboot.html#Pmultibootinfo">Pmultibootinfo</a></td>
+<td class="itemunit"><a class="bold"  href="multiboot.html">multiboot</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="vmm.html#PPageDir">PPageDir</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="vmm.html#PPageDirEntry">PPageDirEntry</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="vmm.html#PPageTable">PPageTable</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="vmm.html#PPageTableEntry">PPageTableEntry</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="syscalls.html#PRegisters">PRegisters</a></td>
+<td class="itemunit"><a class="bold"  href="syscalls.html">syscalls</a></td>
+<td class="itemdesc">Syscalls:
+
+<p>syscalls are run as an interrupt for ring 3 level code. Basically it says for anything the kernel runs or uses, (like writeln/readln), call that procedure/function, but do in WITHIN a interrupt.(this one.)
+
+<p>Trying to call kernel level functions such as these (ring0 code) without using syscalls will cause a GPF if done with ring3 mode.This code uses the constant list and array.MUST be SPECIFIED.
+
+<p>Test with Care.The code to activate Ring3 Mode is in the main kernel file. That kernel Ring3 code INTENTIONALLY DISABLED for now.
+
+<p>The only thing that has to change here are functions that use variables so that they take them directly off of CPU registers and they are not passed directly(indirect assignment)
+
+<p>DO NOT FORK a syscall.Syscalls run as Ring0, process ID 0 (kernel) ONLY.Any other types of calls will cause a GPF while in ring3 mode.
+
+<p>registers open are:
+
+<p>[longword/longint] ecx(ch,cl if byte, cx if word or int) edx(dh,dl if byte, dx if word or int) esi(string index) edi(Dword index??) ..and a few other non standard registers
+
+<p>&ndash;Jazz</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="x86.html#PtrUInt32">PtrUInt32</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="x86.html#PtrUInt8">PtrUInt8</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="x86.html#pword">pword</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="x86.html#SInt32">SInt32</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="x86.html#Sint8">Sint8</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="Heap.html#THeader">THeader</a></td>
+<td class="itemunit"><a class="bold"  href="Heap.html">Heap</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="irq.html#TIrqHandler">TIrqHandler</a></td>
+<td class="itemunit"><a class="bold"  href="irq.html">irq</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="isr.html#TIsrHandler">TIsrHandler</a></td>
+<td class="itemunit"><a class="bold"  href="isr.html">isr</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="vmm.html#TPageDir">TPageDir</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="vmm.html#TPageDirEntry">TPageDirEntry</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="vmm.html#TPageTable">TPageTable</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="vmm.html#TPageTableEntry">TPageTableEntry</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="vmm.html#UBit20">UBit20</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="vmm.html#UBit3">UBit3</a></td>
+<td class="itemunit"><a class="bold"  href="vmm.html">vmm</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="Heap.html#UBit31">UBit31</a></td>
+<td class="itemunit"><a class="bold"  href="Heap.html">Heap</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="x86.html#uint">uint</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">I noticed some issues with some C code being a little obscure. &ndash;Jazz Until you port the code over, this allows it to run ok.</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="x86.html#uint16">uint16</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold"  href="x86.html#uint32">uint32</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold"  href="x86.html#uint8">uint8</a></td>
+<td class="itemunit"><a class="bold"  href="x86.html">x86</a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2013-10-12 18:10:06</em>
+</span>
+</body></html>
